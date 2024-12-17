@@ -44,16 +44,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_guardar')";
 
             if ($conexion->query($sql) === TRUE) {
-                echo "<script>alert('Producto guardado correctamente'); window.location.href='panelAdmin.php';</script>";
-            } else {
-                echo "Error al guardar el producto: " . $conexion->error;
+                header("Location: darAltaProductoFormulario.php?success=true");
+                exit;
             }
-        } else {
-            echo "Error: No se pudo mover el archivo de imagen.";
         }
-    } else {
-        echo "Error: La imagen no fue subida correctamente.";
     }
+    header("Location: darAltaProductoFormulario.php?success=false");
+    exit;
 }
 
 // Cerrar la conexión

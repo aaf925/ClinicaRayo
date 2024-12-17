@@ -149,6 +149,29 @@
             background-color: #0D1637;
         }
 
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+        .modal {
+            background-color: #1A428A;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -194,6 +217,14 @@
             ?>
         </div>
     </div>
-    
+    <!-- Modal -->
+    <?php if (isset($_GET['success']) && $_GET['success'] === 'true'): ?>
+    <div class="modal-overlay" onclick="window.location.href='gestionTiendaOnline.php';">
+        <div class="modal">
+            Producto añadido correctamente<br>
+            (Haga clic en cualquier parte para continuar)
+        </div>
+    </div>
+    <?php endif; ?>
 </body>
 </html>
