@@ -200,6 +200,11 @@
                     <br>
                     <textarea type="text" id="descripcion" name="descripcion" required placeholder="Ingrese la descripci&oacute;n del producto"></textarea>
                 </div>
+                <div class="inputCategoria">
+                    <label for="categoria">Categor&iacute;a:</label>
+                    <br>
+                    <input type="text" id="categoria" name="categoria" required placeholder="Ingrese la categor&iacute;a del producto">
+                </div>
                 <div class = "inputImagen">
                     <label>Foto:</label>
                     <br>

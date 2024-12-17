@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $precio = $conexion->real_escape_string($_POST['precio']);
         $descripcion = $conexion->real_escape_string($_POST['descripcion']);
         $cantidad = $conexion->real_escape_string($_POST['cantidad']);
+        $categoria = $conexion->real_escape_string($_POST['categoria']);
 
         // Manejo de la imagen
         $imagen_nombre = basename($_FILES['imagen']['name']);
@@ -40,8 +41,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $ruta_guardar = "view/img/" . $imagen_nombre;
 
             // Insertar datos en la base de datos
-            $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, imagen_url) 
-                    VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_guardar')";
+            $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, categoria, imagen_url) 
+                    VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$categoria', '$ruta_guardar')";
 
             if ($conexion->query($sql) === TRUE) {
                 header("Location: darAltaProductoFormulario.php?success=true");
