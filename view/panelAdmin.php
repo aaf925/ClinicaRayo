@@ -276,7 +276,7 @@
                         Servicios</button>
                     </a>
 
- <a href="">
+ <a href="gestionTiendaOnline.php">
                     <button class="botones2">Gestión de<br>
                         tienda online</button>
                     </a>

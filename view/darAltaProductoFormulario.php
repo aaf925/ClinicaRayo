@@ -161,7 +161,7 @@
     <div class = "formulario">
         <div class = "tituloFormulario"><h1 style = "color: white; padding: 10px; ">Formulario para dar de alta un producto</h1></div>
         <div class = "inputsFormulario">
-            <form action="altaProducto.php" method="post">
+            <form action="darAltaProducto.php" method="post" enctype="multipart/form-data">
                 <div class = "inputNombre">
                     <label for="nombre">Nombre:</label>
                     <br>
