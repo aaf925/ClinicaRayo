@@ -267,6 +267,8 @@
 </head>
 <body>
 
+    <?php include('menuAdmin.php'); ?>
+
 <div class="contenidoCuadro1">
  <div class="titulo1">ACCESOS DIRECTOS</div>
  <a href="">
