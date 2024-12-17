@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $ruta_guardar = "view/img/" . $imagen_nombre;
 
             // Insertar datos en la base de datos
-            $sql = "INSERT INTO productos (id_producto, nombre, precio, descripcion, cantidad, imagen) 
+            $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, imagen_url) 
                     VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$ruta_guardar')";
 
             if ($conexion->query($sql) === TRUE) {
