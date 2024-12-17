@@ -8,7 +8,5 @@
 
     if ($conexion->connect_errno) {
         die("Error de conexion: " . $conexion->connect_error);
-    } else {
-        echo "¡Conectado a la base de datos!";
     }
 ?>

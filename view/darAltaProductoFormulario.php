@@ -186,7 +186,7 @@
                     <label for="cantidad" id="cantidad">Cantidad:</label>
                     <input type="number" id="cantidad" name="cantidad" required min="1">
                 </div>
-                <button class = "botonCancelar">Cancelar</button>
+                <button class="botonCancelar" type="button" onclick="window.location.href='panelAdmin.html';">Cancelar</button>
                 <button class = "botonGuardar" type="submit">Guardar</button>
             </form>
             <?php
