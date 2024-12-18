@@ -241,6 +241,14 @@ if (isset($_GET['id_producto'])) {
                     </form>
                 </div>
             </div>
+            <?php if (isset($_GET['modificacion']) && $_GET['modificacion'] === 'exito'): ?>
+            <div class="modal-overlay" onclick="window.location.href='gestionTiendaOnline.php';">
+            <div class="modal">
+                Producto modificado correctamente<br>
+                (Haga clic en cualquier parte para continuar)
+            </div>
+        </div>
+    <?php endif; ?>
         </body>
         </html>
         <?php
