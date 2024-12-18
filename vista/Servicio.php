@@ -1,39 +1,37 @@
 <?php
-///require_once 'conexion.php'; // Incluye la clase de conexión
 require_once 'menuUsuarioNoRegistrado.php';
-include_once ('conexion.php');
+include_once ('../modelo/conexion.php');
 
 // Validar si se recibe el ID del servicio en la URL
 if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-  $id_servicio = intval($_GET['id']);
+    $id_servicio = intval($_GET['id']);
 
-  // Consulta SQL para obtener los datos del servicio según el ID
-  $sql = "SELECT nombre, descripcion, imagen_url FROM servicio WHERE id_servicio = ?";
-  $stmt = $conexion->prepare($sql);
-  $stmt->bind_param("i", $id_servicio);
-  $stmt->execute();
-  $resultado = $stmt->get_result();
+    // Consulta SQL para obtener los datos del servicio según el ID
+    $sql = "SELECT nombre, descripcion, imagen_url FROM servicio WHERE id_servicio = ?";
+    $stmt = $conn->prepare($sql); // Cambiado $conexion por $conn
+    $stmt->bind_param("i", $id_servicio);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
 
-  // Verificar si existe el servicio
-  if ($resultado->num_rows > 0) {
-      $servicio = $resultado->fetch_assoc();
-      $nombre = $servicio['nombre'];
-      $descripcion = $servicio['descripcion'];
-      $imagen_url = $servicio['imagen_url'];
-  } else {
-      die("El servicio no existe.");
-  }
+    // Verificar si existe el servicio
+    if ($resultado->num_rows > 0) {
+        $servicio = $resultado->fetch_assoc();
+        $nombre = $servicio['nombre'];
+        $descripcion = $servicio['descripcion'];
+        $imagen_url = $servicio['imagen_url'];
+    } else {
+        die("El servicio no existe.");
+    }
 
-  $stmt->close();
+    $stmt->close();
 } else {
-  die("ID de servicio no proporcionado o inválido.");
+    die("ID de servicio no proporcionado o inválido.");
 }
 
-$conexion->close();
-
-
-
+$conn->close(); // Cambiado $conexion por $conn
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -231,6 +229,5 @@ $conexion->close();
 </body>
 </html>
 <?php
-require_once 'piePagina.html';
-$conexion->close();
+require_once 'piePagina.php';
 ?>

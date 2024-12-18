@@ -1,3 +1,44 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+require_once '../modelo/conexion.php';
+
+// Verificar si la conexión está definida correctamente
+if (!isset($conn) || $conn->connect_error) {
+    die("Error de conexión: " . ($conn->connect_error ?? "Variable de conexión no definida."));
+}
+
+    // Consulta SQL para obtener servicios
+    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio";
+    $result = $conn->query($sql);
+
+    // Verificar si la consulta fue exitosa
+    if (!$result) {
+        throw new Exception("Error en la consulta SQL: " . $conn->error);
+    }
+
+    // Arreglo para almacenar los servicios
+    $servicios = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $servicios[] = $row;
+        }
+    }
+
+// Liberar memoria y cerrar la conexión si no se usa más adelante
+$result->free_result();
+
+// Función para convertir nombres a URL amigables
+function url_amigable($string) {
+    $string = strtolower($string); // Convertir a minúsculas
+    $string = preg_replace('/[^a-z0-9]+/', '-', $string); // Reemplazar espacios y caracteres especiales por guiones
+    $string = trim($string, '-'); // Eliminar guiones al inicio y al final
+    return $string;
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -178,19 +219,20 @@
     <!-- Menú principal -->
     <div class="contenedor-tabla">
         <table class="tabla_menu">
-            <tbody>
+        <tbody>
                 <tr>
                     <td><a href="sobreNosotros.php">Sobre nosotros</a></td>
                     <td class="desplegable">
                         <a href="#">Servicios <span class="flecha">&#9662;</span></a>
                         <ul class="menu-desplegable">
-                            <li><a href="podologiaGeneral.php">Podología General</a></li>
-                            <li><a href="podologiaAvanzada.php">Podología Avanzada</a></li>
-                            <li><a href="podologiaInfantil.php">Podología Infantil</a></li>
-                            <li><a href="eco-intervencionismo.php">Eco-intervencionismo</a></li>
-                            <li><a href="tratamientosFisicos.php">Tratamientos Físicos</a></li>
-                            <li><a href="cirugiaAbierta.php">Cirugía Abierta</a></li>
-                            <li><a href="cirugiaCerrada.php">Cirugía Cerrada</a></li>
+                            <?php foreach ($servicios as $servicio): ?>
+                                <?php $url_nombre = url_amigable($servicio['nombre']); ?>
+                                <li>
+                                    <a href="../vista/servicio.php?id=<?php echo $servicio['id_servicio']; ?>&nombre=<?php echo $url_nombre; ?>">
+                                        <?php echo htmlspecialchars($servicio['nombre']); ?>
+                                    </a>
+                                </li>
+                            <?php endforeach; ?>
                         </ul>
                     </td>
                     <td><a href="tienda.php">Tienda</a></td>

@@ -26,6 +26,38 @@ if (!isset($conn) || $conn->connect_error) {
         }
     }
 
+    // Consulta para obtener las 3 últimas reseñas de servicios
+    $sql_reseñas_servicios = "
+    SELECT rs.calificacion, rs.comentario, rs.fecha_reseña, 
+        s.nombre, s.imagen_url 
+    FROM reseña_servicio rs
+    INNER JOIN servicio s ON rs.id_servicio = s.id_servicio
+    ORDER BY rs.fecha_reseña DESC 
+    LIMIT 3";
+    $result_servicios = $conn->query($sql_reseñas_servicios);
+    $reseñas_servicios = [];
+    if ($result_servicios->num_rows > 0) {
+    while ($row = $result_servicios->fetch_assoc()) {
+        $reseñas_servicios[] = $row;
+    }
+    }
+
+    // Consulta para obtener las 3 últimas reseñas de productos
+    $sql_reseñas_productos = "
+    SELECT rp.calificacion, rp.comentario, rp.fecha_reseña, 
+        p.nombre, p.imagen_url, p.precio 
+    FROM reseña_producto rp
+    INNER JOIN producto p ON rp.id_producto = p.id_producto
+    ORDER BY rp.fecha_reseña DESC 
+    LIMIT 3";
+    $result_productos = $conn->query($sql_reseñas_productos);
+    $reseñas_productos = [];
+    if ($result_productos->num_rows > 0) {
+    while ($row = $result_productos->fetch_assoc()) {
+        $reseñas_productos[] = $row;
+    }
+    }
+
 // Cerrar la conexión
 $conn->close();
 ?>
