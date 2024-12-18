@@ -1,16 +1,12 @@
 <?php
-$server = "localhost";
-$user = "root";
-$pass = "javisan2711_";
-$db = "ClinicaRayo";
+    $servidor = "localhost";
+    $usuario = "root";
+    $contrasena = "root";
+    $base = "clinicarayo";
 
-// Crear conexión
-$conexion = new mysqli($server, $user, $pass, $db);
+    $conexion = mysqli_connect($servidor, $usuario, $contrasena, $base);
 
-// Verificar conexión
-if ($conexion->connect_error) {
-    die("Conexión fallida: " . $conexion->connect_error);
-} else {
-    echo "Conectado";
-}
+    if ($conexion->connect_errno) {
+        die("Error de conexion: " . $conexion->connect_error);
+    }
 ?>
