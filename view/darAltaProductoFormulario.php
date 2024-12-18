@@ -43,7 +43,7 @@
             align-items: center;
         }
 
-        .inputNombre, .inputPrecio, .inputCantidad, .inputImagen {
+        .inputNombre, .inputPrecio, .inputCantidad, .inputImagen, .inputCategoria {
             width: 400px;
         }
 
@@ -67,8 +67,22 @@
             float: right;
         }
 
+        .inputCategoria {
+            float: left;
+        }
+
         .botonArchivo {
             float: left;
+        }
+
+        .botonesFormulario {
+            width: 800px;
+            height: auto;
+            gap: 100px;
+            padding-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .botonGuardar, .botonCancelar {
@@ -110,19 +124,6 @@
             font-size: 20px;
             resize: none;
             font-family: 'Alverta', sans-serif;
-        }
-
-        label#cantidad {
-            padding-left: 180px;
-        }
-
-        input#cantidad {
-            width: 70px;
-            margin-left: 10px;
-        }
-
-        .inputCantidad {
-            margin-top: 10px;
         }
 
         input#imagen {
@@ -205,17 +206,19 @@
                     <br>
                     <input type="text" id="categoria" name="categoria" required placeholder="Ingrese la categor&iacute;a del producto">
                 </div>
+                <div class = "inputCantidad">
+                    <label for="cantidad" id="cantidad">Cantidad:</label>
+                    <input type="number" id="cantidad" name="cantidad" required min="1">
+                </div>
                 <div class = "inputImagen">
                     <label>Foto:</label>
                     <br>
                     <input type="file" id="imagen" name="imagen" accept = ".jpg, .jpeg, .png" required>
                 </div>
-                <div class = "inputCantidad">
-                    <label for="cantidad" id="cantidad">Cantidad:</label>
-                    <input type="number" id="cantidad" name="cantidad" required min="1">
+                <div class="botonesFormulario">
+                    <button class="botonCancelar" type="button" onclick="window.location.href='gestionTiendaOnline.php';">Cancelar</button>
+                    <button class = "botonGuardar" type="submit">Guardar</button>
                 </div>
-                <button class="botonCancelar" type="button" onclick="window.location.href='panelAdmin.php';">Cancelar</button>
-                <button class = "botonGuardar" type="submit">Guardar</button>
             </form>
             <?php
                 include('darAltaProducto.php');

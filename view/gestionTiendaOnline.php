@@ -125,10 +125,27 @@ require_once 'conexion.php'; // Conexión a la base de datos
                 $conexion->close();
                 ?>
             </div>
+            <script>
+                function modificarProducto() {
+                    // Obtener todos los checkboxes seleccionados
+                    const checkboxes = document.querySelectorAll("input[name='productos[]']:checked");
 
+                    // Si no hay exactamente un producto seleccionado, mostrar una alerta
+                    if (checkboxes.length !== 1) {
+                        alert("Debe seleccionar exactamente un producto para modificar.");
+                        return;
+                    }
+
+                    // Obtener el ID del producto seleccionado
+                    const idProducto = checkboxes[0].value;
+
+                    // Redirigir a modificarProductoFormulario.php con el ID como parámetro GET
+                    window.location.href = `modificarProductoFormulario.php?id_producto=${idProducto}`;
+                }
+            </script>
             <div class="buttons">
                 <button type="button" onclick="window.location.href='darAltaProductoFormulario.php';">Dar de alta nuevo producto</button>
-                <button onclick="window.location.href='modificarProductoFormulario.php';">Modificar productos</button>
+                <button type="button" onclick="modificarProducto()">Modificar productos</button>
                 <button type="submit" name="borrar">Dar de baja producto</button>
             </div>            
         </form>
