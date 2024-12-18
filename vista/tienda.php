@@ -149,7 +149,7 @@ require_once 'menuUsuarioNoRegistrado.php';
         </div>
     </div>
     <div class="boton-contenedor1">
-        <a href="verMasProductosCremas.php">
+        <a href="tiendaVerMasCremas.php">
             <button class="boton1">Ver más productos</button>
         </a>
     </div>
@@ -180,7 +180,7 @@ require_once 'menuUsuarioNoRegistrado.php';
         </div>
     </div>
     <div class="boton-contenedor1">
-        <a href="verMasProductos.php">
+        <a href="tiendaVerMasProductos.php">
             <button class="boton1">Ver más productos</button>
         </a>
     </div>
