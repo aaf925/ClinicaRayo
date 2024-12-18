@@ -32,12 +32,10 @@
             align-items: center;
         }
 
-                /* Estilo del carrito */
-                .carrito-contenedor {
+        .carrito-contenedor {
             position: relative;
             top: 70px;
             left: 1350px;
-           
         }
 
         .carrito-contenedor img {
@@ -60,6 +58,7 @@
         .item img {
             width: 154px;
             height: auto;
+            cursor: pointer;
         }
 
         .texto {
@@ -86,7 +85,6 @@
             margin-right: 70px;
         }
 
-        /* Estilo del botón */
         .boton1 {
             width: 162px;
             height: 34px;
@@ -109,33 +107,36 @@
 </head>
 <body>
 
+    <div class="carrito-contenedor">
+        <a href="carrito.php">
+            <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
+        </a>
+    </div>
 
-        <!-- Icono del carrito -->
-        <div class="carrito-contenedor">
-            <a href="carrito.php">
-                <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
-            </a>
-        </div>
-
-    <!-- Primer cuadro: Cremas -->
     <div class="titulo" style="margin-top: 120px;">CREMAS</div>
     <div class="contenedor">
         <div class="item">
-            <img src="../controlador/images/CPIcrema.png" alt="Crema 1">
+            <a href="producto.php?id=1">
+                <img src="../controlador/images/CPIcrema.png" alt="Crema 1">
+            </a>
             <div class="texto">
                 <p>CPI crema <br> podológica, 50 g</p>
                 <p class="precio">19,95 €</p>
             </div>
         </div>
         <div class="item">
-            <img src="../controlador/images/dermaFeetCrema.png" alt="Crema 2">
+            <a href="producto.php?id=2">
+                <img src="../controlador/images/dermaFeetCrema.png" alt="Crema 2">
+            </a>
             <div class="texto">
                 <p>Dermafeet Crema <br> Podológica Urea <br> 20% 75ml</p>
                 <p class="precio">11,50 €</p>
             </div>
         </div>
         <div class="item">
-            <img src="../controlador/images/UreadinPodosCrema.png" alt="Crema 3">
+            <a href="producto.php?id=3">
+                <img src="../controlador/images/UreadinPodosCrema.png" alt="Crema 3">
+            </a>
             <div class="texto">
                 <p>Ureadin Podios Gel Oil<br> 75ml Reparador Talones<br> y Pies</p>
                 <p class="precio">9,68 €</p>
@@ -143,30 +144,35 @@
         </div>
     </div>
     <div class="boton-contenedor1">
-        <a href="tiendaVerMasCremas.html">
+        <a href="tiendaVerMasCremas.php">
             <button class="boton1">Ver más cremas</button>
         </a>
     </div>
 
-    <!-- Segundo cuadro: Otros Productos -->
     <div class="titulo" style="margin-top: 70px;">OTROS PRODUCTOS</div>
     <div class="contenedor">
         <div class="item">
-            <img src="../controlador/images/DrSchollLapiz.png" alt="Producto 1">
+            <a href="producto.php?id=4">
+                <img src="../controlador/images/DrSchollLapiz.png" alt="Producto 1">
+            </a>
             <div class="texto">
                 <p>Dr Scholl Lápiz<br> Tratamiento Verrugas<br> Pies y Manos<br> Cremas de manos</p>
                 <p class="precio">18,99 €</p>
             </div>
         </div>
         <div class="item">
-            <img src="../controlador/images/CoconutMask.png" alt="Producto 2">
+            <a href="producto.php?id=5">
+                <img src="../controlador/images/CoconutMask.png" alt="Producto 2">
+            </a>
             <div class="texto">
                 <p>7th Heaven Coconut<br> Foot Mask Mascarilla<br> Suavizante para Pies<br> Cuidado de piernas y pies</p>
                 <p class="precio">3,99 €</p>
             </div>
         </div>
         <div class="item">
-            <img src="../controlador/images/BetterEliteCortaUñas.png" alt="Producto 3">
+            <a href="producto.php?id=6">
+                <img src="../controlador/images/BetterEliteCortaUñas.png" alt="Producto 3">
+            </a>
             <div class="texto">
                 <p>Better Elite Corta<br> Uñas de Pedicura<br> Herramientas<br> manicura y pedicura</p>
                 <p class="precio">5,95 €</p>
@@ -174,7 +180,7 @@
         </div>
     </div>
     <div class="boton-contenedor1">
-        <a href="tiendaVerMasProductos.html">
+        <a href="tiendaVerMasProductos.php">
             <button class="boton1">Ver más productos</button>
         </a>
     </div>

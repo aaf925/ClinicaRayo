@@ -1,11 +1,12 @@
 <?php
+// tiendaVerMasCremas.php
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once("../modelo/conexion.php");
 
-$sql = "SELECT nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema'";
+$sql = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema'";
 $result = $conexion->query($sql);
 ?>
 
@@ -18,9 +19,6 @@ $result = $conexion->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Alverta:wght@700;600;900&display=swap" rel="stylesheet">
 
     <style>
-        
-        
-
         body {
             font-family: 'Averta';
             margin: 0;
@@ -41,7 +39,6 @@ $result = $conexion->query($sql);
             margin: 0;
         }
 
-        
         .contenedor {
             width: 90%;
             margin: 0 auto;
@@ -51,7 +48,6 @@ $result = $conexion->query($sql);
             justify-content: flex-start;
         }
 
-       
         .carrito-contenedor {
             position: absolute;
             top: 20px; 
@@ -137,7 +133,6 @@ $result = $conexion->query($sql);
     </style>
 </head>
 <body>
-
     <div class="carrito-contenedor">
         <a href="carrito.php">
             <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
@@ -153,30 +148,21 @@ $result = $conexion->query($sql);
             <?php while ($row = $result->fetch_assoc()): ?>
                 <div class="item">
                     <div class="columna-imagen">
-                        <?php 
-                        
-                        $imagen_url = "../" . htmlspecialchars($row['imagen_url']);
-                        ?>
+                        <?php $imagen_url = "../" . htmlspecialchars($row['imagen_url']); ?>
+                        <a href="producto.php?id=<?php echo $row['id_producto']; ?>">
                         <img src="<?php echo $imagen_url; ?>" alt="Producto">
-                        <a href="AñadirACarrito.php">
-                            <button class="boton1">Añadir a carrito</button>
                         </a>
+                        <form action="AñadirProductoCarrito.php" method="POST">
+                            <input type="hidden" name="id_producto" value="<?php echo $row['id_producto']; ?>">
+                            <input type="hidden" name="precio" value="<?php echo $row['precio']; ?>">
+                            <button type="submit" class="boton1">Añadir a carrito</button>
+                        </form>
                     </div>
-
-                    
                     <div class="texto">
-                        
                         <p class="nombre"><?php echo nl2br(htmlspecialchars($row['nombre'])); ?></p>
-                        
-                        
                         <p class="descripcion">
-                            <?php 
-                            $descripcion = htmlspecialchars($row['descripcion']);
-                            echo mb_strimwidth($descripcion, 0, 30, "...");
-                            ?>
+                            <?php echo mb_strimwidth(htmlspecialchars($row['descripcion']), 0, 100, "..."); ?>
                         </p>
-
-                        
                         <p class="precio"><?php echo number_format($row['precio'], 2); ?> €</p>
                     </div>
                 </div>
@@ -185,10 +171,7 @@ $result = $conexion->query($sql);
             <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
         <?php endif; ?>
     </div>
-
 </body>
 </html>
 
-<?php
-$conexion->close();
-?>
+<?php $conexion->close(); ?>

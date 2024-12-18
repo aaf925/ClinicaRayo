@@ -170,7 +170,7 @@ $result = $conexion->query($sql);
                         <p class="descripcion">
                             <?php 
                             $descripcion = htmlspecialchars($row['descripcion']);
-                            echo mb_strimwidth($descripcion, 0, 30, "...");
+                            echo mb_strimwidth($descripcion, 0, 100, "...");
                             ?>
                         </p>
 
