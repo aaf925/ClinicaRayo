@@ -1,6 +1,23 @@
 <?
-
+require_once '../modelo/conexion.php';
 require_once 'menuUsuarioNoRegistrado.php'; 
+
+try {
+    // Consultas para obtener productos por categorías
+    $sqlCremas = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'CREMAS' LIMIT 3";
+    $sqlOtros = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'OTROS' LIMIT 3";
+
+    // Ejecutar consultas
+    $resultCremas = $conn->query($sqlCremas);
+    $resultOtros = $conn->query($sqlOtros);
+
+    // Almacenar resultados en arrays
+    $cremas = $resultCremas->fetch_all(MYSQLI_ASSOC);
+    $otrosProductos = $resultOtros->fetch_all(MYSQLI_ASSOC);
+
+} catch (Exception $e) {
+    die("Error al cargar los productos: " . $e->getMessage());
+}
 
 ?>
 
@@ -111,6 +128,16 @@ require_once 'menuUsuarioNoRegistrado.php';
             background-color: #0D1637;
             transform: translateY(-3px);
         }
+
+        .producto-enlace {
+            text-decoration: none; /* Quita el subrayado */
+            color: inherit; /* Mantiene el color del texto */
+        }
+
+        .producto-enlace:hover {
+            text-decoration: none; /* Asegura que tampoco tenga subrayado al pasar el cursor */
+        }
+
     </style>
 </head>
 <body>
@@ -123,67 +150,57 @@ require_once 'menuUsuarioNoRegistrado.php';
             </a>
         </div>
 
-    <!-- Primer cuadro: Cremas -->
-    <div class="titulo" style="margin-top: 120px;">CREMAS</div>
-    <div class="contenedor">
-        <div class="item">
-            <img src="../controlador/images/CPIcrema.png" alt="Crema 1">
-            <div class="texto">
-                <p>CPI crema <br> podológica, 50 g</p>
-                <p class="precio">19,95 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="../controlador/images/dermaFeetCrema.png" alt="Crema 2">
-            <div class="texto">
-                <p>Dermafeet Crema <br> Podológica Urea <br> 20% 75ml</p>
-                <p class="precio">11,50 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="../controlador/images/UreadinPodosCrema.png" alt="Crema 3">
-            <div class="texto">
-                <p>Ureadin Podios Gel Oil<br> 75ml Reparador Talones<br> y Pies</p>
-                <p class="precio">9,68 €</p>
-            </div>
-        </div>
-    </div>
-    <div class="boton-contenedor1">
-        <a href="tiendaVerMasCremas.php">
-            <button class="boton1">Ver más productos</button>
-        </a>
-    </div>
+<!-- Primer cuadro: Cremas -->
+<div class="titulo" style="margin-top: 120px;">CREMAS</div>
+<div class="contenedor">
+    <?php if (!empty($cremas)): ?>
+        <?php foreach ($cremas as $crema): ?>
+            <a href="producto.php?id=<?php echo htmlspecialchars($crema['id_producto']); ?>" class="producto-enlace">
+                <div class="item">
+                    <img src="<?php echo htmlspecialchars($crema['imagen_url']); ?>" alt="<?php echo htmlspecialchars($crema['nombre']); ?>">
+                    <div class="texto">
+                        <p><?php echo htmlspecialchars($crema['nombre']); ?><br><?php echo nl2br(htmlspecialchars($crema['descripcion'])); ?></p>
+                        <p class="precio"><?php echo htmlspecialchars(number_format($crema['precio'], 2, ',', '.')) . " €"; ?></p>
+                    </div>
+                </div>
+            </a>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay productos disponibles en esta categoría.</p>
+    <?php endif; ?>
+</div>
+<div class="boton-contenedor1">
+    <a href="tiendaVerMasCremas.php">
+        <button class="boton1">Ver más productos</button>
+    </a>
+</div>
 
-    <!-- Segundo cuadro: Otros Productos -->
-    <div class="titulo" style="margin-top: 70px;">OTROS PRODUCTOS</div>
-    <div class="contenedor">
-        <div class="item">
-            <img src="../controlador/images/DrSchollLapiz.png" alt="Producto 1">
-            <div class="texto">
-                <p>Dr Scholl Lápiz<br> Tratamiento Verrugas<br> Pies y Manos<br> Cremas de manos</p>
-                <p class="precio">18,99 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="../controlador/images/CoconutMask.png" alt="Producto 2">
-            <div class="texto">
-                <p>7th Heaven Coconut<br> Foot Mask Mascarilla<br> Suavizante para Pies<br> Cuidado de piernas y pies</p>
-                <p class="precio">3,99 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <img src="../controlador/images/BetterEliteCortaUñas.png" alt="Producto 3">
-            <div class="texto">
-                <p>Better Elite Corta<br> Uñas de Pedicura<br> Herramientas<br> manicura y pedicura</p>
-                <p class="precio">5,95 €</p>
-            </div>
-        </div>
-    </div>
-    <div class="boton-contenedor1">
-        <a href="tiendaVerMasProductos.php">
-            <button class="boton1">Ver más productos</button>
-        </a>
-    </div>
+<!-- Segundo cuadro: Otros Productos -->
+<div class="titulo" style="margin-top: 70px;">OTROS PRODUCTOS</div>
+<div class="contenedor">
+    <?php if (!empty($otrosProductos)): ?>
+        <?php foreach ($otrosProductos as $producto): ?>
+            <a href="producto.php?id=<?php echo htmlspecialchars($producto['id_producto']); ?>" class="producto-enlace">
+                <div class="item">
+                    <img src="<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                    <div class="texto">
+                        <p><?php echo htmlspecialchars($producto['nombre']); ?><br><?php echo nl2br(htmlspecialchars($producto['descripcion'])); ?></p>
+                        <p class="precio"><?php echo htmlspecialchars(number_format($producto['precio'], 2, ',', '.')) . " €"; ?></p>
+                    </div>
+                </div>
+            </a>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <p>No hay productos disponibles en esta categoría.</p>
+    <?php endif; ?>
+</div>
+<div class="boton-contenedor1">
+    <a href="tiendaVerMasProductos.php">
+        <button class="boton1">Ver más productos</button>
+    </a>
+</div>
+
+
 
 <? require_once 'piePagina.php';?>
 </body>

@@ -51,7 +51,7 @@ function url_amigable($string) {
     
     <style>
 
-        /* Evitar que el desplazamiento horizontal ocurra yaplicar fuente */
+        /* Evitar que el desplazamiento horizontal ocurra y aplicar fuente */
         body {
             margin: 0;
             padding: 0;
@@ -221,7 +221,7 @@ function url_amigable($string) {
         <table class="tabla_menu">
         <tbody>
                 <tr>
-                    <td><a href="sobreNosotros.php">Sobre nosotros</a></td>
+                    <td><a href="../vista/sobreNosotros.php">Sobre nosotros</a></td>
                     <td class="desplegable">
                         <a href="#">Servicios <span class="flecha">&#9662;</span></a>
                         <ul class="menu-desplegable">
@@ -235,10 +235,10 @@ function url_amigable($string) {
                             <?php endforeach; ?>
                         </ul>
                     </td>
-                    <td><a href="tienda.php">Tienda</a></td>
-                    <td><a href="reservarCita.php">Reservar cita</a></td>
-                    <td><a href="blog.php">Blog</a></td>
-                    <td><a href="contactanos.php">Contáctanos</a></td>
+                    <td><a href="../vista/tienda.php">Tienda</a></td>
+                    <td><a href="../vista/reservarCita.php">Reservar cita</a></td>
+                    <td><a href="../vista/blog.php">Blog</a></td>
+                    <td><a href="../vista/contactanos.php">Contáctanos</a></td>
                 </tr>
             </tbody>
         </table>

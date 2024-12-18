@@ -4,6 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once("../modelo/conexion.php");
+require_once 'menuUsuarioNoRegistrado.php';
 
 $sql = "SELECT nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'producto'";
 $result = $conn->query($sql);
@@ -188,5 +189,6 @@ $result = $conn->query($sql);
 </html>
 
 <?php
+require_once 'piePagina.php';
 $conn->close();
 ?>

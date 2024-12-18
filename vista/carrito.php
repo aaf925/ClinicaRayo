@@ -9,7 +9,7 @@ require_once("../modelo/conexion.php");
 
 // Consulta para obtener los productos con categoría "crema"
 $sql = "SELECT nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema'";
-$result = $conexion->query($sql);
+$result = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
@@ -198,5 +198,5 @@ $result = $conexion->query($sql);
 </html>
 
 <?php
-$conexion->close();
+$conn->close();
 ?>
