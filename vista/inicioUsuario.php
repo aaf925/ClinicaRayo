@@ -1,50 +1,33 @@
 <?php
-require_once 'conexion.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Consulta SQL para obtener servicios
-$sql = "SELECT id_servicio, nombre, imagen_url FROM servicio";
-$result = $conexion->query($sql);
+require_once '../modelo/conexion.php';
 
-// Arreglo para almacenar los servicios
-$servicios = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $servicios[] = $row;
-    }
-}
-// Consulta para obtener las 3 últimas reseñas de servicios
-$sql_reseñas_servicios = "
-    SELECT rs.calificacion, rs.comentario, rs.fecha_reseña, 
-           s.nombre, s.imagen_url 
-    FROM reseña_servicio rs
-    INNER JOIN servicio s ON rs.id_servicio = s.id_servicio
-    ORDER BY rs.fecha_reseña DESC 
-    LIMIT 3";
-$result_servicios = $conexion->query($sql_reseñas_servicios);
-$reseñas_servicios = [];
-if ($result_servicios->num_rows > 0) {
-    while ($row = $result_servicios->fetch_assoc()) {
-        $reseñas_servicios[] = $row;
-    }
+// Verificar si la conexión está definida correctamente
+if (!isset($conn) || $conn->connect_error) {
+    die("Error de conexión: " . ($conn->connect_error ?? "Variable de conexión no definida."));
 }
 
-// Consulta para obtener las 3 últimas reseñas de productos
-$sql_reseñas_productos = "
-    SELECT rp.calificacion, rp.comentario, rp.fecha_reseña, 
-           p.nombre, p.imagen_url, p.precio 
-    FROM reseña_producto rp
-    INNER JOIN producto p ON rp.id_producto = p.id_producto
-    ORDER BY rp.fecha_reseña DESC 
-    LIMIT 3";
-$result_productos = $conexion->query($sql_reseñas_productos);
-$reseñas_productos = [];
-if ($result_productos->num_rows > 0) {
-    while ($row = $result_productos->fetch_assoc()) {
-        $reseñas_productos[] = $row;
-    }
-}
+    // Consulta SQL para obtener servicios
+    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio";
+    $result = $conn->query($sql);
 
-$conexion->close();
+    // Verificar si la consulta fue exitosa
+    if (!$result) {
+        throw new Exception("Error en la consulta SQL: " . $conn->error);
+    }
+
+    // Arreglo para almacenar los servicios
+    $servicios = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $servicios[] = $row;
+        }
+    }
+
+// Cerrar la conexión
+$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -220,17 +203,17 @@ $conexion->close();
         .boton-carrusel.derecha {
             right: 10px;
         }
-        /* Estilo para las reseñas */
-        /* Contenedor principal de reseñas */
-.contenedor-reseñas {
-   /* width: 100%;
-    max-width: 1800px;
-    display: flex;
-    justify-content: space-between;
-    gap: 20px;
-    margin: 50px auto;
-    background-color: white;
-    width: 100%;*/  
+            /* Estilo para las reseñas */
+            /* Contenedor principal de reseñas */
+            .contenedor-reseñas {
+            /* width: 100%;
+            max-width: 1800px;
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin: 50px auto;
+            background-color: white;
+            width: 100%;*/  
             max-width: 2000px;
             width: 90%;
             display: flex;
@@ -241,61 +224,61 @@ $conexion->close();
             background-color: #f4f4f4; 
 }
 
-/* Estilo de cada recuadro de reseñas */
-.recuadro-reseña {
-    width: 568%;
-    border: 1px solid #f4f4f4;
-    border-radius: 8px;
-    padding: 15px;
-    background-color: #f4f4f4;
+        /* Estilo de cada recuadro de reseñas */
+        .recuadro-reseña {
+            width: 568%;
+            border: 1px solid #f4f4f4;
+            border-radius: 8px;
+            padding: 15px;
+            background-color: #f4f4f4;
 
-}
+        }
 
-/* Título de las reseñas */
-.titulo-reseña {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-}
+        /* Título de las reseñas */
+        .titulo-reseña {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+        }
 
-/* Cada reseña individual */
-.reseña-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #e0e0e0;
-}
+        /* Cada reseña individual */
+        .reseña-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e0e0e0;
+        }
 
-/* Imágenes de reseñas */
-.reseña-imagen {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 10px;
-}
+        /* Imágenes de reseñas */
+        .reseña-imagen {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
 
-/* Contenido de las reseñas */
-.reseña-texto h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #111C4E;
-}
+        /* Contenido de las reseñas */
+        .reseña-texto h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #111C4E;
+        }
 
-.reseña-texto span {
-    color: #FFD700; /* Estrellas doradas */
-    margin-left: 10px;
-    font-size: 1rem;
-}
+        .reseña-texto span {
+            color: #FFD700; /* Estrellas doradas */
+            margin-left: 10px;
+            font-size: 1rem;
+        }
 
-.reseña-texto p {
-    margin: 5px 0;
-    color: #666;
-    font-size: 0.9rem;
-}
+        .reseña-texto p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 0.9rem;
+        }
 
 
 
@@ -317,21 +300,26 @@ $conexion->close();
 
     <!-- Carrusel de Servicios -->
      <!-- Contenedor del carrusel -->
-     <div class="carrusel-container" style="margin-top: 50px;">
-        <!-- Botones de navegación -->
-        <button class="boton-carrusel izquierda" onclick="desplazarCarrusel(-1)">&#9664;</button>
-        <div class="carrusel" id="carrusel">
+<div class="carrusel-container" style="margin-top: 50px;">
+    <!-- Botones de navegación -->
+    <button class="boton-carrusel izquierda" onclick="desplazarCarrusel(-1)">&#9664;</button>
+    <div class="carrusel" id="carrusel">
+        <?php if (!empty($servicios)): ?>
             <?php foreach ($servicios as $servicio): ?>
                 <div class="servicio">
-                  <a href="servicio.php?id=<?php echo $servicio['id_servicio']; ?>&nombre=<?php echo url_amigable($servicio['nombre']); ?>" class="boton-servicio">
-                     <img src="<?php echo htmlspecialchars($servicio['imagen_url']); ?>" alt="<?php echo htmlspecialchars($servicio['nombre']); ?>">
-                     <h3><?php echo htmlspecialchars($servicio['nombre']); ?></h3>
-                  </a>
+                    <a href="servicio.php?id=<?php echo $servicio['id_servicio']; ?>&nombre=<?php echo urlencode($servicio['nombre']); ?>" class="boton-servicio">
+                        <img src="<?php echo htmlspecialchars($servicio['imagen_url']); ?>" alt="<?php echo htmlspecialchars($servicio['nombre']); ?>">
+                        <h3><?php echo htmlspecialchars($servicio['nombre']); ?></h3>
+                    </a>
                 </div>
             <?php endforeach; ?>
-        </div>
-        <button class="boton-carrusel derecha" onclick="desplazarCarrusel(1)">&#9654;</button>
+        <?php else: ?>
+            <p>No hay servicios disponibles.</p>
+        <?php endif; ?>
     </div>
+    <button class="boton-carrusel derecha" onclick="desplazarCarrusel(1)">&#9654;</button>
+</div>
+
     
  
       <!-- Contenedor para las reseñas -->

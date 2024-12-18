@@ -1,27 +1,3 @@
-<?php
-require_once 'conexion.php';
-$sql = "SELECT id_servicio, nombre FROM servicio";
-$result = $conexion->query($sql);
-
-// Almacenar los resultados en un array
-$servicios = [];
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $servicios[] = $row; // Guarda cada fila en el array
-    }
-}
-//$conexion->close();
-
-// Función para convertir nombres a URL amigables
-function url_amigable($string) {
-    $string = strtolower($string); // Convertir a minúsculas
-    $string = preg_replace('/[^a-z0-9]+/', '-', $string); // Reemplazar espacios y caracteres especiales por guiones
-    $string = trim($string, '-'); // Eliminar guiones al inicio y al final
-    return $string;
-}
-
-?>
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -66,7 +42,7 @@ function url_amigable($string) {
             display: flex;
             gap: 40px; 
             margin-top: -30px; 
-            margin-left: 970px; 
+            margin-left: calc(85vw - 300px); 
         }
 
         .boton {
@@ -92,12 +68,13 @@ function url_amigable($string) {
         .contenedor-tabla {
             position: absolute; 
             top: 127px; 
-            left: 1610px; 
-            transform: translate(-50%, -50%); 
-            width: 100%; 
+            right: 0; /* Ajusta el contenedor al borde derecho de la pantalla */
+            transform: translate(0, -50%); /* Ajusta el elemento de manera centrada verticalmente, pero sin moverlo horizontalmente */
+            width: auto;  /* O puedes usar un valor específico para el ancho si quieres que no sea 100% */
             text-align: center;
             z-index: 10; 
         }
+
 
         /* Estilo de la tabla en general */
         .tabla_menu {
@@ -182,10 +159,9 @@ function url_amigable($string) {
 </head>
 <body>
     <!-- Cabecera -->
-     
     <div class="cabecera">
         <a href="inicioUsuarioNoRegistrado.php">
-            <img src="LogoBlanco.png" alt="Logo de la Clínica" class="logo">
+            <img src="../controlador/images/LogoBlanco.png" alt="Logo de la Clínica" class="logo">
         </a>
 
         <!-- Botones -->
@@ -208,14 +184,13 @@ function url_amigable($string) {
                     <td class="desplegable">
                         <a href="#">Servicios <span class="flecha">&#9662;</span></a>
                         <ul class="menu-desplegable">
-                            <?php foreach ($servicios as $servicio): ?>
-                                <?php $url_nombre = url_amigable($servicio['nombre']); ?>
-                                <li>
-                                    <a href="servicio.php?id=<?php echo $servicio['id_servicio']; ?>&nombre=<?php echo $url_nombre; ?>">
-                                        <?php echo htmlspecialchars($servicio['nombre']); ?>
-                                    </a>
-                                </li>
-                            <?php endforeach; ?>
+                            <li><a href="podologiaGeneral.php">Podología General</a></li>
+                            <li><a href="podologiaAvanzada.php">Podología Avanzada</a></li>
+                            <li><a href="podologiaInfantil.php">Podología Infantil</a></li>
+                            <li><a href="eco-intervencionismo.php">Eco-intervencionismo</a></li>
+                            <li><a href="tratamientosFisicos.php">Tratamientos Físicos</a></li>
+                            <li><a href="cirugiaAbierta.php">Cirugía Abierta</a></li>
+                            <li><a href="cirugiaCerrada.php">Cirugía Cerrada</a></li>
                         </ul>
                     </td>
                     <td><a href="tienda.php">Tienda</a></td>

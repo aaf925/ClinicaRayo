@@ -2,7 +2,7 @@
 // Verificar si el formulario fue enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Conectar a la base de datos
-    require_once './modelo/conexion.php';
+    require_once '../modelo/conexion.php';
 
     // Recoger los datos del formulario
     $nombre = $_POST['nombre'];
