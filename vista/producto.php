@@ -3,32 +3,42 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-session_start();
+session_start(); // Inicia la sesión
+
 require_once("../modelo/conexion.php");
+
+// Simular el ID del usuario si no hay sesión iniciada
+if (!isset($_SESSION['id_usuario'])) {
+    // Variable provisional para pruebas
+    $_SESSION['id_usuario'] = 999; // Cambia este valor para probar con diferentes usuarios
+}
+
+$id_usuario = intval($_SESSION['id_usuario']); // Recuperar el ID del usuario desde la sesión o variable provisional
 
 // Procesar la solicitud de añadir al carrito (AJAX)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'añadir_carrito') {
     $id_producto = intval($_POST['id_producto']);
     $precio = floatval($_POST['precio']);
-    $id_usuario = 1; // Suponiendo un usuario fijo, usa $_SESSION['id_usuario'] si gestionas sesiones
-    $cantidad = 1;
+    $cantidad = 1; // Por defecto, la cantidad es 1
     $total = $cantidad * $precio;
+    $id_carrito = 1; // Puedes actualizar este valor si manejas varios carritos
 
-    $sql_insert = "INSERT INTO carrito (id_carrito, id_usuario, id_producto, cantidad, total) VALUES (NULL, ?, ?, ?, ?)";
+    // Preparar la consulta de inserción
+    $sql_insert = "INSERT INTO carrito (id_entrada, id_carrito, id_usuario, id_producto, cantidad, total) VALUES (NULL, ?, ?, ?, ?, ?)";
     $stmt = $conexion->prepare($sql_insert);
 
     if ($stmt) {
-        $stmt->bind_param("iiii", $id_usuario, $id_producto, $cantidad, $total);
+        $stmt->bind_param("iiiid", $id_carrito, $id_usuario, $id_producto, $cantidad, $total);
         $stmt->execute();
 
         if ($stmt->affected_rows > 0) {
-            echo json_encode(['success' => true]);
+            echo json_encode(['success' => true, 'message' => 'Producto añadido al carrito.']);
         } else {
-            echo json_encode(['success' => false, 'error' => 'No se pudo añadir al carrito.']);
+            echo json_encode(['success' => false, 'error' => 'No se pudo añadir al carrito. Detalles: ' . $stmt->error]);
         }
         $stmt->close();
     } else {
-        echo json_encode(['success' => false, 'error' => 'Error al preparar la consulta.']);
+        echo json_encode(['success' => false, 'error' => 'Error al preparar la consulta: ' . $conexion->error]);
     }
     $conexion->close();
     exit();
@@ -60,7 +70,11 @@ $stmt_relacionados = $conexion->prepare($sql_relacionados);
 $stmt_relacionados->bind_param("i", $id_producto);
 $stmt_relacionados->execute();
 $result_relacionados = $stmt_relacionados->get_result();
-$otros_productos = $result_relacionados->fetch_all(MYSQLI_ASSOC);
+
+$otros_productos = [];
+while ($row = $result_relacionados->fetch_assoc()) {
+    $otros_productos[] = $row;
+}
 
 $conexion->close();
 ?>
@@ -72,7 +86,6 @@ $conexion->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($producto['nombre']); ?></title>
     <style>
-        /* Tus estilos aquí */
         body {
             font-family: 'Averta';
             margin: 0;
@@ -84,8 +97,8 @@ $conexion->close();
             right: 20px;
         }
         .carrito-contenedor img {
-            width: 60px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             cursor: pointer;
         }
         .contenido {
@@ -147,7 +160,7 @@ $conexion->close();
             if (result.success) {
                 alert('Producto añadido al carrito correctamente.');
             } else {
-                alert('Error al añadir el producto al carrito.');
+                alert('Error al añadir el producto al carrito: ' + result.error);
             }
         }
     </script>

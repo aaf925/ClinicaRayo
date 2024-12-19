@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 
 require_once("../modelo/conexion.php");
 
-$sql = "SELECT nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'producto'";
+$sql = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'producto'";
 $result = $conexion->query($sql);
 ?>
 
@@ -18,7 +18,6 @@ $result = $conexion->query($sql);
     <link href="https://fonts.googleapis.com/css2?family=Alverta:wght@700;600;900&display=swap" rel="stylesheet">
 
     <style>
-        
         body {
             font-family: 'Averta';
             margin: 0;
@@ -39,7 +38,6 @@ $result = $conexion->query($sql);
             margin: 0;
         }
 
-        
         .contenedor {
             width: 90%;
             margin: 0 auto;
@@ -49,7 +47,6 @@ $result = $conexion->query($sql);
             justify-content: flex-start;
         }
 
-       
         .carrito-contenedor {
             position: absolute;
             top: 20px; 
@@ -84,6 +81,12 @@ $result = $conexion->query($sql);
             width: 154px;
             height: auto;
             margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .item img:hover {
+            transform: scale(1.1);
         }
 
         .texto {
@@ -152,29 +155,25 @@ $result = $conexion->query($sql);
                 <div class="item">
                     <div class="columna-imagen">
                         <?php 
-                        
                         $imagen_url = "../" . htmlspecialchars($row['imagen_url']);
                         ?>
-                        <img src="<?php echo $imagen_url; ?>" alt="Producto">
+                        <!-- Enlace a producto.php con el id del producto -->
+                        <a href="producto.php?id=<?php echo $row['id_producto']; ?>">
+                            <img src="<?php echo $imagen_url; ?>" alt="Producto">
+                        </a>
                         <a href="AñadirACarrito.php">
                             <button class="boton1">Añadir a carrito</button>
                         </a>
                     </div>
 
-                    
                     <div class="texto">
-                        
                         <p class="nombre"><?php echo nl2br(htmlspecialchars($row['nombre'])); ?></p>
-                        
-                        
                         <p class="descripcion">
                             <?php 
                             $descripcion = htmlspecialchars($row['descripcion']);
                             echo mb_strimwidth($descripcion, 0, 100, "...");
                             ?>
                         </p>
-
-                        
                         <p class="precio"><?php echo number_format($row['precio'], 2); ?> €</p>
                     </div>
                 </div>
@@ -184,6 +183,10 @@ $result = $conexion->query($sql);
         <?php endif; ?>
     </div>
 
+    <br>
+    <br>
+
+    <?php include 'piePagina.html'; ?>
 </body>
 </html>
 

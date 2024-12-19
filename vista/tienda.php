@@ -107,6 +107,7 @@
 </head>
 <body>
 
+
     <div class="carrito-contenedor">
         <a href="carrito.php">
             <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
@@ -184,6 +185,11 @@
             <button class="boton1">Ver más productos</button>
         </a>
     </div>
+    <br>
+    <br>
+
+    <!-- Aquí se incluye el pie de página -->
+    <?php include 'piePagina.html'; ?>
 
 </body>
 </html>

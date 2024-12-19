@@ -186,7 +186,7 @@ $productos = $result->fetch_all(MYSQLI_ASSOC);
         <div class="total-container">
             <div class="total">0,00 €</div>
             <div class="acciones">
-                <button onclick="window.location.href='tienda.html'">Continuar Compra</button>
+                <button onclick="window.location.href='tienda.php'">Continuar Compra</button>
                 <button onclick="window.location.href='pagarCarrito.php'">Pagar carrito</button>
                 <button onclick="vaciarCarrito()">Vaciar carrito</button>
             </div>

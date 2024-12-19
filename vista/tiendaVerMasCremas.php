@@ -175,6 +175,11 @@ $result = $conexion->query($sql);
             <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
         <?php endif; ?>
     </div>
+
+    <br>
+    <br>
+
+    <?php include 'piePagina.html'; ?>
 </body>
 </html>
 
