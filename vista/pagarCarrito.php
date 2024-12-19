@@ -51,7 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt_vaciar_carrito->bind_param("i", $id_usuario);
         $stmt_vaciar_carrito->execute();
 
-        echo "<script>alert('Pedido guardado. Continuando con el pago.'); window.location.href='../vista/continuarPagandoCarrito.php';</script>";
+        // Redirigir a continuarPagarCarrito.php
+        echo "<script>alert('Pedido guardado. Continuando con el pago.'); window.location.href='../vista/continuarPagarCarrito.php';</script>";
+        exit();
     } else {
         echo "<script>alert('Error al procesar el pedido. Inténtalo de nuevo.');</script>";
     }

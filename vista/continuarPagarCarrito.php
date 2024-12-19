@@ -1,3 +1,37 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+session_start(); // Iniciar sesión
+require_once("../modelo/conexion.php"); // Asegúrate de incluir este archivo
+
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Debes iniciar sesión para continuar.'); window.location.href='iniciosesion.php';</script>";
+    exit();
+}
+
+$id_usuario = $_SESSION['id_usuario']; // Obtener el ID del usuario desde la sesión
+
+// Consultar el total del carrito para calcular el total del pedido
+$sql_carrito = "SELECT SUM(cantidad * total) AS total_pedido
+                FROM carrito
+                WHERE id_usuario = ?";
+$stmt_carrito = $conexion->prepare($sql_carrito);
+$stmt_carrito->bind_param("i", $id_usuario);
+$stmt_carrito->execute();
+$result_carrito = $stmt_carrito->get_result();
+$row_carrito = $result_carrito->fetch_assoc();
+
+if (!$row_carrito || !$row_carrito['total_pedido']) {
+    echo "<script>alert('No hay productos en el carrito.'); window.location.href='carrito.php';</script>";
+    exit();
+}
+
+$total_pedido = number_format($row_carrito['total_pedido'], 2); // Formatear el total del pedido
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -78,8 +112,8 @@
         
         <!-- Opciones de pago -->
         <div>
-            <img src="applepay.png" alt="Apple Pay">
-            <img src="paypal.png" alt="PayPal">
+            <img src="../controlador/images/applepay.png" alt="Apple Pay">
+            <img src="../controlador/images/Paypal.png" alt="PayPal">
         </div>
 
         <p>O pagar con tarjeta bancaria:</p>
@@ -96,10 +130,16 @@
 
             <!-- Botones -->
             <div class="botones">
-                <button type="submit" class="boton">Pagar 6,50 €</button>
+                <button type="submit" class="boton">Pagar <?php echo $total_pedido; ?> €</button>
                 <button type="button" class="boton boton-cancelar" onclick="window.location.href='carrito.php'">Cancelar</button>
             </div>
         </form>
     </div>
 </body>
 </html>
+
+<?php
+if (isset($conexion)) {
+    $conexion->close(); // Cierra la conexión si está definida
+}
+?>

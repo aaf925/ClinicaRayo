@@ -144,6 +144,7 @@ $conexion->close();
             width: 60px;
             height: auto;
             margin-bottom: 10px;
+            
         }
     </style>
     <script>
@@ -199,9 +200,15 @@ $conexion->close();
 
         <!-- Otros productos -->
         <div class="columna-derecha">
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
             <h2>Otros productos de esta sección</h2>
             <?php foreach ($otros_productos as $otro): ?>
-                <div class="otros-productos">
+                <div class="otros-productos" >
                     <a href="producto.php?id=<?php echo $otro['id_producto']; ?>">
                         <img src="../<?php echo htmlspecialchars($otro['imagen_url']); ?>" alt="<?php echo htmlspecialchars($otro['nombre']); ?>">
                     </a>

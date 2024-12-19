@@ -1,3 +1,19 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once("../modelo/conexion.php");
+
+// Obtener los tres primeros productos de la categoría 'crema'
+$sql_cremas = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema' LIMIT 3";
+$result_cremas = $conexion->query($sql_cremas);
+
+// Obtener los tres primeros productos de la categoría 'producto'
+$sql_productos = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'producto' LIMIT 3";
+$result_productos = $conexion->query($sql_productos);
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,7 +25,7 @@
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Averta';
             margin: 0;
             padding: 0;
         }
@@ -22,20 +38,18 @@
         }
 
         .contenedor {
-            width: 1337px;
-            height: 149px;
-            border-radius: 5px;
-            padding: 20px;
+            width: 90%;
             margin: 20px auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: flex-start;
         }
 
         .carrito-contenedor {
-            position: relative;
-            top: 70px;
-            left: 1350px;
+            position: absolute; /* Cambiado a posición absoluta */
+            top: 50px; /* Altura ajustada para alinearlo con el título */
+            right: 20px; /* Alineado a la derecha */
         }
 
         .carrito-contenedor img {
@@ -51,8 +65,9 @@
 
         .item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            width: calc(33.333% - 30px);
         }
 
         .item img {
@@ -63,15 +78,12 @@
 
         .texto {
             color: #000000;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-left: 20px;
+            text-align: center;
             font-weight: 700;
         }
 
         .texto p {
-            margin: 0;
+            margin: 5px 0;
         }
 
         .texto .precio {
@@ -79,24 +91,23 @@
         }
 
         .boton-contenedor1 {
-            display: flex;
-            justify-content: flex-end; 
+            text-align: center;
             margin-top: 30px;
-            margin-right: 70px;
         }
 
         .boton1 {
-            width: 162px;
-            height: 34px;
+            width: 200px;
+            height: 40px;
             border: none;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: none;
             color: white;
             background-color: #111C4E;
             border-radius: 10px;
             transition: background-color 0.3s, transform 0.2s;
+            position:relative;
+            left: 600px;
         }
 
         .boton1:hover {
@@ -107,42 +118,31 @@
 </head>
 <body>
 
-
+    <!-- Icono del carrito -->
     <div class="carrito-contenedor">
         <a href="carrito.php">
             <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
         </a>
     </div>
 
-    <div class="titulo" style="margin-top: 120px;">CREMAS</div>
+    <!-- Sección de Cremas -->
+    <div class="titulo" style="margin-top: 50px;">CREMAS</div>
     <div class="contenedor">
-        <div class="item">
-            <a href="producto.php?id=1">
-                <img src="../controlador/images/CPIcrema.png" alt="Crema 1">
-            </a>
-            <div class="texto">
-                <p>CPI crema <br> podológica, 50 g</p>
-                <p class="precio">19,95 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <a href="producto.php?id=2">
-                <img src="../controlador/images/dermaFeetCrema.png" alt="Crema 2">
-            </a>
-            <div class="texto">
-                <p>Dermafeet Crema <br> Podológica Urea <br> 20% 75ml</p>
-                <p class="precio">11,50 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <a href="../vista/producto.php?id=3">
-                <img src="../controlador/images/UreadinPodosCrema.png" alt="Crema 3">
-            </a>
-            <div class="texto">
-                <p>Ureadin Podios Gel Oil<br> 75ml Reparador Talones<br> y Pies</p>
-                <p class="precio">9,68 €</p>
-            </div>
-        </div>
+        <?php if ($result_cremas && $result_cremas->num_rows > 0): ?>
+            <?php while ($crema = $result_cremas->fetch_assoc()): ?>
+                <div class="item">
+                    <a href="producto.php?id=<?php echo $crema['id_producto']; ?>">
+                        <img src="../<?php echo htmlspecialchars($crema['imagen_url']); ?>" alt="<?php echo htmlspecialchars($crema['nombre']); ?>">
+                    </a>
+                    <div class="texto">
+                        <p><?php echo htmlspecialchars($crema['nombre']); ?></p>
+                        <p class="precio"><?php echo number_format($crema['precio'], 2); ?> €</p>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
+        <?php endif; ?>
     </div>
     <div class="boton-contenedor1">
         <a href="../vista/tiendaVerMasCremas.php">
@@ -150,46 +150,38 @@
         </a>
     </div>
 
-    <div class="titulo" style="margin-top: 70px;">OTROS PRODUCTOS</div>
+    <!-- Sección de Otros Productos -->
+    <div class="titulo" style="margin-top: 50px;">OTROS PRODUCTOS</div>
     <div class="contenedor">
-        <div class="item">
-            <a href="producto.php?id=4">
-                <img src="../controlador/images/DrSchollLapiz.png" alt="Producto 1">
-            </a>
-            <div class="texto">
-                <p>Dr Scholl Lápiz<br> Tratamiento Verrugas<br> Pies y Manos<br> Cremas de manos</p>
-                <p class="precio">18,99 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <a href="producto.php?id=5">
-                <img src="../controlador/images/CoconutMask.png" alt="Producto 2">
-            </a>
-            <div class="texto">
-                <p>7th Heaven Coconut<br> Foot Mask Mascarilla<br> Suavizante para Pies<br> Cuidado de piernas y pies</p>
-                <p class="precio">3,99 €</p>
-            </div>
-        </div>
-        <div class="item">
-            <a href="producto.php?id=6">
-                <img src="../controlador/images/BetterEliteCortaUñas.png" alt="Producto 3">
-            </a>
-            <div class="texto">
-                <p>Better Elite Corta<br> Uñas de Pedicura<br> Herramientas<br> manicura y pedicura</p>
-                <p class="precio">5,95 €</p>
-            </div>
-        </div>
+        <?php if ($result_productos && $result_productos->num_rows > 0): ?>
+            <?php while ($producto = $result_productos->fetch_assoc()): ?>
+                <div class="item">
+                    <a href="producto.php?id=<?php echo $producto['id_producto']; ?>">
+                        <img src="../<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                    </a>
+                    <div class="texto">
+                        <p><?php echo htmlspecialchars($producto['nombre']); ?></p>
+                        <p class="precio"><?php echo number_format($producto['precio'], 2); ?> €</p>
+                    </div>
+                </div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
+        <?php endif; ?>
     </div>
     <div class="boton-contenedor1">
         <a href="../vista/tiendaVerMasProductos.php">
             <button class="boton1">Ver más productos</button>
         </a>
     </div>
-    <br>
-    <br>
-
-    <!-- Aquí se incluye el pie de página -->
+<br>
+<br>
+    <!-- Pie de página -->
     <?php include 'piePagina.html'; ?>
 
 </body>
 </html>
+
+<?php
+$conexion->close();
+?>

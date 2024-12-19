@@ -4,8 +4,46 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+session_start();
 require_once("../modelo/conexion.php");
 
+// Simular el ID del usuario si no hay sesión iniciada
+if (!isset($_SESSION['id_usuario'])) {
+    $_SESSION['id_usuario'] = 999; // ID de usuario provisional para pruebas
+}
+
+$id_usuario = intval($_SESSION['id_usuario']);
+
+// Procesar la solicitud de añadir al carrito (AJAX)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['accion'] === 'añadir_carrito') {
+    $id_producto = intval($_POST['id_producto']);
+    $precio = floatval($_POST['precio']);
+    $cantidad = 1; // Por defecto, la cantidad es 1
+    $total = $cantidad * $precio;
+    $id_carrito = 1; // ID del carrito (puedes cambiarlo según tus necesidades)
+
+    // Insertar en la base de datos
+    $sql_insert = "INSERT INTO carrito (id_entrada, id_carrito, id_usuario, id_producto, cantidad, total) VALUES (NULL, ?, ?, ?, ?, ?)";
+    $stmt = $conexion->prepare($sql_insert);
+
+    if ($stmt) {
+        $stmt->bind_param("iiiid", $id_carrito, $id_usuario, $id_producto, $cantidad, $total);
+        $stmt->execute();
+
+        if ($stmt->affected_rows > 0) {
+            echo json_encode(['success' => true, 'message' => 'Producto añadido al carrito.']);
+        } else {
+            echo json_encode(['success' => false, 'error' => 'No se pudo añadir al carrito.']);
+        }
+        $stmt->close();
+    } else {
+        echo json_encode(['success' => false, 'error' => 'Error al preparar la consulta.']);
+    }
+    $conexion->close();
+    exit();
+}
+
+// Obtener productos de la categoría 'crema'
 $sql = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema'";
 $result = $conexion->query($sql);
 ?>
@@ -48,7 +86,6 @@ $result = $conexion->query($sql);
             justify-content: flex-start;
         }
 
-        /* Contenedor del carrito */
         .carrito-contenedor {
             position: absolute;
             top: 20px; 
@@ -83,6 +120,8 @@ $result = $conexion->query($sql);
             width: 154px;
             height: auto;
             margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
         }
 
         .texto {
@@ -132,6 +171,24 @@ $result = $conexion->query($sql);
             transform: translateY(-3px);
         }
     </style>
+    <script>
+        async function añadirAlCarrito(event) {
+            event.preventDefault(); // Evitar el comportamiento predeterminado del formulario
+
+            const formData = new FormData(event.target);
+            const response = await fetch('', { // Enviar la solicitud al mismo archivo
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                alert('Producto añadido al carrito correctamente.');
+            } else {
+                alert('Error al añadir el producto al carrito: ' + result.error);
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Icono del carrito -->
@@ -156,7 +213,8 @@ $result = $conexion->query($sql);
                         <a href="producto.php?id=<?php echo $row['id_producto']; ?>">
                             <img src="<?php echo $imagen_url; ?>" alt="Producto">
                         </a>
-                        <form action="AñadirProductoCarrito.php" method="POST">
+                        <form onsubmit="añadirAlCarrito(event)">
+                            <input type="hidden" name="accion" value="añadir_carrito">
                             <input type="hidden" name="id_producto" value="<?php echo $row['id_producto']; ?>">
                             <input type="hidden" name="precio" value="<?php echo $row['precio']; ?>">
                             <button type="submit" class="boton1">Añadir a carrito</button>
@@ -164,9 +222,7 @@ $result = $conexion->query($sql);
                     </div>
                     <div class="texto">
                         <p class="nombre"><?php echo nl2br(htmlspecialchars($row['nombre'])); ?></p>
-                        <p class="descripcion">
-                            <?php echo mb_strimwidth(htmlspecialchars($row['descripcion']), 0, 100, "..."); ?>
-                        </p>
+                        <p class="descripcion"><?php echo mb_strimwidth(htmlspecialchars($row['descripcion']), 0, 100, "..."); ?></p>
                         <p class="precio"><?php echo number_format($row['precio'], 2); ?> €</p>
                     </div>
                 </div>
