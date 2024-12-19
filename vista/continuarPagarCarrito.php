@@ -107,6 +107,25 @@ $total_pedido = number_format($row_pedido['total'], 2); // Formatear el total de
             background-color: #bbb;
         }
     </style>
+    <script>
+        function validarFormulario() {
+            const tarjeta = document.querySelector('[name="numero_tarjeta"]').value;
+            const vencimiento = document.querySelector('[name="mes_vencimiento"]').value;
+
+            // Validar si la fecha de vencimiento es válida
+            const [mes, año] = vencimiento.split('/');
+            const ahora = new Date();
+            const mesActual = ahora.getMonth() + 1;
+            const añoActual = ahora.getFullYear() % 100;
+
+            if (parseInt(año) < añoActual || (parseInt(año) === añoActual && parseInt(mes) < mesActual)) {
+                alert('La tarjeta ha expirado.');
+                return false;
+            }
+
+            return true;
+        }
+    </script>
 </head>
 <body>
     <div class="contenedor">
@@ -114,21 +133,20 @@ $total_pedido = number_format($row_pedido['total'], 2); // Formatear el total de
         
         <!-- Opciones de pago -->
         <div>
-            <img src="../controlador/images/applepay.png" alt="Apple Pay">
-            <img src="../controlador/images/Paypal.png" alt="PayPal">
+            
         </div>
 
-        <p>O pagar con tarjeta bancaria:</p>
+        <p> Pagar con tarjeta bancaria:</p>
         
         <!-- Formulario de pago -->
-        <form action="procesarPago.php" method="POST" class="formulario">
+        <form action="procesarPago.php" method="POST" class="formulario" onsubmit="return validarFormulario()">
             <input type="email" name="email" placeholder="E-mail" required>
-            <input type="text" name="numero_tarjeta" placeholder="1234 1234 1234 1234" maxlength="19" required>
+            <input type="text" name="numero_tarjeta" placeholder="1234 1234 1234 1234" maxlength="19" pattern="\d{4}\s\d{4}\s\d{4}\s\d{4}" title="Debe ser un número de tarjeta válido (16 dígitos separados por espacios)" required>
             <div style="display: flex; gap: 10px;">
-                <input type="text" name="mes_vencimiento" placeholder="MM/YY" maxlength="5" style="flex: 1;" required>
-                <input type="text" name="cvc" placeholder="CVC" maxlength="3" style="flex: 1;" required>
+                <input type="text" name="mes_vencimiento" placeholder="MM/YY" maxlength="5" pattern="\d{2}/\d{2}" title="Debe estar en el formato MM/YY" required>
+                <input type="text" name="cvc" placeholder="CVC" maxlength="3" pattern="\d{3}" title="Debe ser un CVC válido (3 dígitos)" required>
             </div>
-            <input type="text" name="titular_tarjeta" placeholder="Nombre del titular de la tarjeta" required>
+            <input type="text" name="titular_tarjeta" placeholder="Nombre del titular de la tarjeta" pattern="[A-Za-z\s]+" title="Solo letras y espacios permitidos" required>
 
             <!-- Botones -->
             <div class="botones">
