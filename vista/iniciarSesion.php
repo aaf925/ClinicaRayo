@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +12,7 @@
 
          /* Estilo para el cuadro central */
          .contenidoCuadro {
-        width: 492px;
+        width: 522px;
         height: 435px;
         background-color: #1A428A; 
         border-radius: 5px; 
@@ -74,7 +73,7 @@
         justify-content: space-around;
         width: 100%;
         position: relative;
-        top: 50px;
+        top: 10px;
     }
 
     .botom button {
@@ -99,20 +98,26 @@
     <!-- CuadroCentral -->
     <div class="cuadroCentral">
         <div class="contenidoCuadro">
-    <form class="formulario" method="POST" action="validarInicioSesion.php">
+    <form class="formulario" form action="../controlador/login.php" method="POST">
     <label for="correo">&nbsp;&nbsp;&nbsp;Correo electrónico:</label>
-    <input type="email" id="correo" name="correo" placeholder="ejemplo@ejemplo.es" required>
+    <input type="email" name="correo" id="correo" name="correo" placeholder="ejemplo@ejemplo.es" required>
 
     <label for="contrasena">&nbsp;&nbsp;&nbsp;Contraseña:</label>
-    <input type="password" id="contrasena" name="contrasena" placeholder="********" required>
+    <input type="password" name="contrasena" id="contrasena" name="contrasena" placeholder="********" required>
+       <!-- reCAPTCHA -->
+       <div class="g-recaptcha" data-sitekey="6LderJ8qAAAAALEkE_SHDhxy3Xz0l1sGdjwlDrgD"></div>
+    <br>
 
     <a href="#">¿No tienes cuenta? Regístrate aquí.</a>
 
     <div class="botom">
-        <button type="button">Cancelar</button>
+        <button type="button" onclick="'../controlador/registrarse.php'">Cancelar</button>
+        
         <button type="submit">Confirmar</button>
     </div>
 </form>
+<!-- Incluye la librería de reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
         </div>
     </div>
 </body>

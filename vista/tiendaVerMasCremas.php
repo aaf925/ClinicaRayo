@@ -48,6 +48,7 @@ $result = $conexion->query($sql);
             justify-content: flex-start;
         }
 
+        /* Contenedor del carrito */
         .carrito-contenedor {
             position: absolute;
             top: 20px; 
@@ -133,16 +134,19 @@ $result = $conexion->query($sql);
     </style>
 </head>
 <body>
+    <!-- Icono del carrito -->
     <div class="carrito-contenedor">
         <a href="carrito.php">
             <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
         </a>
     </div>
 
+    <!-- Cabecera -->
     <div class="cabecera">
         <h1 class="titulo">CREMAS</h1>
     </div>
 
+    <!-- Contenedor de productos -->
     <div class="contenedor">
         <?php if ($result && $result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
@@ -150,7 +154,7 @@ $result = $conexion->query($sql);
                     <div class="columna-imagen">
                         <?php $imagen_url = "../" . htmlspecialchars($row['imagen_url']); ?>
                         <a href="producto.php?id=<?php echo $row['id_producto']; ?>">
-                        <img src="<?php echo $imagen_url; ?>" alt="Producto">
+                            <img src="<?php echo $imagen_url; ?>" alt="Producto">
                         </a>
                         <form action="AñadirProductoCarrito.php" method="POST">
                             <input type="hidden" name="id_producto" value="<?php echo $row['id_producto']; ?>">

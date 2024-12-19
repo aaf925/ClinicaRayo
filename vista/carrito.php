@@ -1,15 +1,29 @@
 <?php
-// Mostrar errores para depuración
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Incluir archivo de conexión
+session_start();
 require_once("../modelo/conexion.php");
 
-// Consulta para obtener los productos con categoría "crema"
-$sql = "SELECT nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema'";
-$result = $conexion->query($sql);
+// Verificar si el usuario ha iniciado sesión
+if (!isset($_SESSION['id_usuario'])) {
+    echo "<script>alert('Debes iniciar sesión para ver el carrito.'); window.location.href='../vista/iniciosesion.php';</script>";
+    exit();
+}
+
+$id_usuario = $_SESSION['id_usuario'];
+
+// Consultar productos en el carrito del usuario
+$sql = "SELECT c.id_producto, p.nombre, p.precio, p.imagen_url, c.cantidad 
+        FROM carrito c
+        JOIN producto p ON c.id_producto = p.id_producto
+        WHERE c.id_usuario = ?";
+$stmt = $conexion->prepare($sql);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+$productos = $result->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -17,186 +31,218 @@ $result = $conexion->query($sql);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda de Cremas</title>
+    <title>Carrito</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Alverta:wght@700;600;900&display=swap" rel="stylesheet">
 
     <style>
-        /* Estilos generales */
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            font-family: Alverta, sans-serif;
+            margin: 20px;
+            margin-left: 40px;
+            background-color: #f9f9f9;
         }
 
-        /* Cabecera con título */
-        .cabecera {
-            width: 100%;
-            text-align: left;
-            padding-left: 70px;
-            margin-top: 20px;
+        h2 {
+            font-style: 700;
             margin-bottom: 50px;
+            margin-left: 50px;
+            margin-top: 50px;
         }
 
-        .titulo {
-            font-size: 32px;
-            font-weight: 700;
-            margin: 0;
-        }
-
-        /* Contenedor principal */
-        .contenedor {
-            width: 90%;
-            margin: 0 auto;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 50px;
-            justify-content: flex-start;
-        }
-
-        /* Estilo del carrito */
-        .carrito-contenedor {
-            position: absolute;
-            top: 20px; /* Separación desde arriba */
-            right: 30px; /* Separación desde la derecha */
-        }
-
-        .carrito-contenedor img {
-            width: 80px;
-            height: 80px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .carrito-contenedor img:hover {
-            transform: scale(1.1);
-        }
-
-        /* Estructura del producto */
-        .item {
+        .producto {
             display: flex;
             align-items: flex-start;
-            gap: 30px;
-            width: calc(33.333% - 40px); /* Tres elementos por fila */
+            margin-top: 20px;
+            padding-bottom: 90px;
         }
 
-        /* Columna de la imagen */
-        .item .columna-imagen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        .producto img {
+            width: 177px;
+            height: 182px;
+            margin-left: 50px;
+            border: 1px solid #ddd;
         }
 
-        .item img {
-            width: 154px;
-            height: auto;
-            margin-bottom: 20px;
-        }
-
-        /* Columna del texto */
-        .texto {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-content: flex-start;
+        .detalle-producto {
             flex: 1;
         }
 
-        .texto .nombre {
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 5px;
-            color: #000;
+        .detalle-producto p {
+            margin: 5px 0;
+            margin-left: 50px;
         }
 
-        .texto .descripcion {
-            font-size: 14px;
-            color: #444;
-            margin-bottom: 10px;
+        .precio-cantidad {
+            margin-top: 10px;
+            margin-left: 0px;
         }
 
-        .texto .precio {
-            font-size: 16px;
-            color: #111;
-            font-weight: bold;
+        .precio-cantidad span {
+            display: block;
+            font-weight: 700;
+            margin-left: 50px;
         }
 
-        /* Botón */
-        .boton1 {
-            width: 154px;
-            height: 34px;
-            border: none;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
+        .precio-conteo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+            width: 250px;
+            margin-left: 50px;
+        }
+
+        .contador {
+            display: flex;
+            align-items: center;
+            margin-left: 200px;
+        }
+
+        .contador button {
+            background-color: #1A224B;
             color: white;
-            background-color: #111C4E;
-            border-radius: 8px;
-            transition: background-color 0.3s, transform 0.2s;
+            border: none;
+            border-radius: 5px;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
         }
 
-        .boton1:hover {
-            background-color: #0D1637;
-            transform: translateY(-3px);
+        .contador .count {
+            text-align: center;
+            width: 40px;
+            height: 30px;
+            border: 1px solid #ddd;
+            line-height: 30px;
+        }
+
+        .precio {
+            font-weight: bold;
+        }
+
+        .total-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            margin-left: 40px;
+            margin-bottom: 150px;
+        }
+
+        .total {
+            background-color: white;
+            border: 1px solid #1A224B;
+            padding: 10px 15px;
+            font-weight: bold;
+        }
+
+        .acciones {
+            display: flex;
+            gap: 10px;
+        }
+
+        .acciones button {
+            background-color: #1A224B;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 100px;
+        }
+
+        .acciones button:hover {
+            background-color: #0f1536;
         }
     </style>
 </head>
 <body>
+    <h2>Productos Seleccionados</h2>
 
-    <!-- Contenedor del carrito -->
-    <div class="carrito-contenedor">
-        <a href="carrito.php">
-            <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
-        </a>
-    </div>
-
-    <!-- Cabecera fija con el título -->
-    <div class="cabecera">
-        <h1 class="titulo">CREMAS</h1>
-    </div>
-
-    <!-- Contenedor de productos -->
-    <div class="contenedor">
-        <?php if ($result && $result->num_rows > 0): ?>
-            <?php while ($row = $result->fetch_assoc()): ?>
-                <div class="item">
-                    <!-- Columna de la imagen con el botón debajo -->
-                    <div class="columna-imagen">
-                        <?php 
-                        // Construir la ruta de la imagen
-                        $imagen_url = "../" . htmlspecialchars($row['imagen_url']);
-                        ?>
-                        <img src="<?php echo $imagen_url; ?>" alt="Producto">
-                        <a href="AñadirACarrito.php">
-                            <button class="boton1">Añadir a carrito</button>
-                        </a>
+    <?php if (!empty($productos)): ?>
+        <?php foreach ($productos as $producto): ?>
+            <div class="producto" data-price="<?php echo $producto['precio']; ?>">
+                <img src="../<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                <div class="detalle-producto">
+                    <p><strong><?php echo htmlspecialchars($producto['nombre']); ?></strong></p>
+                    <div class="precio-cantidad">
+                        <span>Precio: <?php echo number_format($producto['precio'], 2); ?> €</span>
+                        <span>Cantidad: <?php echo $producto['cantidad']; ?></span>
                     </div>
-
-                    <!-- Columna de texto -->
-                    <div class="texto">
-                        <!-- Nombre -->
-                        <p class="nombre"><?php echo nl2br(htmlspecialchars($row['nombre'])); ?></p>
-                        
-                        <!-- Descripción truncada -->
-                        <p class="descripcion">
-                            <?php 
-                            $descripcion = htmlspecialchars($row['descripcion']);
-                            echo mb_strimwidth($descripcion, 0, 30, "...");
-                            ?>
-                        </p>
-
-                        <!-- Precio -->
-                        <p class="precio"><?php echo number_format($row['precio'], 2); ?> €</p>
+                    <div class="precio-conteo">
+                        <span class="precio-individual"><?php echo number_format($producto['precio'] * $producto['cantidad'], 2); ?> €</span>
+                        <div class="contador">
+                            <button class="decrement">-</button>
+                            <div class="count"><?php echo $producto['cantidad']; ?></div>
+                            <button class="increment">+</button>
+                        </div>
                     </div>
                 </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
-        <?php endif; ?>
-    </div>
+            </div>
+        <?php endforeach; ?>
 
+        <div class="total-container">
+            <div class="total">0,00 €</div>
+            <div class="acciones">
+                <button onclick="window.location.href='tienda.html'">Continuar Compra</button>
+                <button onclick="window.location.href='pagarCarrito.php'">Pagar carrito</button>
+                <button onclick="vaciarCarrito()">Vaciar carrito</button>
+            </div>
+        </div>
+    <?php else: ?>
+        <p>No hay productos en el carrito.</p>
+    <?php endif; ?>
+
+    <script>
+        const productos = document.querySelectorAll('.producto');
+        const totalContainer = document.querySelector('.total');
+
+        function actualizarTotal() {
+            let total = 0;
+            productos.forEach(producto => {
+                const precioUnitario = parseFloat(producto.dataset.price);
+                const cantidad = parseInt(producto.querySelector('.count').textContent);
+                total += precioUnitario * cantidad;
+            });
+            totalContainer.textContent = `${total.toFixed(2)} €`;
+        }
+
+        productos.forEach(producto => {
+            const btnIncrement = producto.querySelector('.increment');
+            const btnDecrement = producto.querySelector('.decrement');
+            const countDisplay = producto.querySelector('.count');
+            const precioDisplay = producto.querySelector('.precio-individual');
+            const precioUnitario = parseFloat(producto.dataset.price);
+
+            let cantidad = parseInt(countDisplay.textContent);
+
+            btnIncrement.addEventListener('click', () => {
+                cantidad++;
+                countDisplay.textContent = cantidad;
+                precioDisplay.textContent = `${(precioUnitario * cantidad).toFixed(2)} €`;
+                actualizarTotal();
+            });
+
+            btnDecrement.addEventListener('click', () => {
+                if (cantidad > 1) {
+                    cantidad--;
+                    countDisplay.textContent = cantidad;
+                    precioDisplay.textContent = `${(precioUnitario * cantidad).toFixed(2)} €`;
+                    actualizarTotal();
+                }
+            });
+        });
+
+        function vaciarCarrito() {
+            alert("Carrito vaciado correctamente.");
+            window.location.reload();
+        }
+
+        actualizarTotal();
+    </script>
 </body>
 </html>
 
-<?php
-$conexion->close();
-?>
+<?php $conexion->close(); ?>
