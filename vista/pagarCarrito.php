@@ -4,14 +4,14 @@ require_once("../modelo/conexion.php");
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['id_usuario'])) {
-    echo "<script>alert('Debes iniciar sesión para ver tu carrito.'); window.location.href='../vista/iniciosesion.php';</script>";
+    echo "<script>alert('Debes iniciar sesión para completar tu compra.'); window.location.href='../vista/iniciosesion.php';</script>";
     exit();
 }
 
 $id_usuario = $_SESSION['id_usuario'];
 
-// Obtener productos del carrito
-$sql = "SELECT c.id_producto, p.nombre, p.precio, c.cantidad, p.imagen_url 
+// Obtener productos del carrito y calcular el total
+$sql = "SELECT c.id_producto, p.nombre, p.precio, c.cantidad, p.imagen_url
         FROM carrito c
         JOIN producto p ON c.id_producto = p.id_producto
         WHERE c.id_usuario = ?";
@@ -25,6 +25,36 @@ $total = 0;
 while ($row = $result->fetch_assoc()) {
     $productos[] = $row;
     $total += $row['precio'] * $row['cantidad'];
+}
+
+// Procesar el formulario al enviarlo
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nombre = htmlspecialchars($_POST['nombre']);
+    $apellidos = htmlspecialchars($_POST['apellidos']);
+    $telefono = htmlspecialchars($_POST['telefono']);
+    $direccion = htmlspecialchars($_POST['direccion']);
+    $mas_informacion = htmlspecialchars($_POST['mas_informacion']);
+    $codigo_postal = htmlspecialchars($_POST['codigo_postal']);
+    $provincia = htmlspecialchars($_POST['provincia']);
+    $ciudad = htmlspecialchars($_POST['ciudad']);
+
+    // Insertar los datos del pedido en la tabla `pedido`
+    $sql_pedido = "INSERT INTO pedido (id_usuario, fecha_pedido, nombre, apellidos, telefono, direccion, mas_informacion, codigo_postal, provincia, ciudad) 
+                   VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt_pedido = $conexion->prepare($sql_pedido);
+    $stmt_pedido->bind_param("issssssss", $id_usuario, $nombre, $apellidos, $telefono, $direccion, $mas_informacion, $codigo_postal, $provincia, $ciudad);
+
+    if ($stmt_pedido->execute()) {
+        // Vaciar el carrito del usuario
+        $sql_vaciar_carrito = "DELETE FROM carrito WHERE id_usuario = ?";
+        $stmt_vaciar_carrito = $conexion->prepare($sql_vaciar_carrito);
+        $stmt_vaciar_carrito->bind_param("i", $id_usuario);
+        $stmt_vaciar_carrito->execute();
+
+        echo "<script>alert('Pedido guardado. Continuando con el pago.'); window.location.href='../vista/continuarPagandoCarrito.php';</script>";
+    } else {
+        echo "<script>alert('Error al procesar el pedido. Inténtalo de nuevo.');</script>";
+    }
 }
 ?>
 
@@ -122,22 +152,28 @@ while ($row = $result->fetch_assoc()) {
             margin-top: 20px;
         }
     </style>
+    <script>
+        function redirigirCarrito() {
+            window.location.href = 'carrito.php';
+        }
+    </script>
 </head>
 <body>
     <div class="contenedor">
         <!-- Columna Izquierda: Formulario -->
         <div class="formulario">
             <h2>Datos de envío</h2>
-            <form action="procesarPedido.php" method="POST">
+            <form action="" method="POST">
                 <input type="text" name="nombre" placeholder="Nombre" required>
-                <input type="text" name="apellido" placeholder="Apellido" required>
+                <input type="text" name="apellidos" placeholder="Apellidos" required>
                 <input type="text" name="telefono" placeholder="Número de teléfono" required>
                 <input type="text" name="direccion" placeholder="Dirección (calle y número)" required>
+                <input type="text" name="mas_informacion" placeholder="Información adicional (opcional)">
                 <input type="text" name="codigo_postal" placeholder="Código postal" required>
                 <input type="text" name="provincia" placeholder="Provincia" required>
                 <input type="text" name="ciudad" placeholder="Ciudad" required>
                 <div class="botones">
-                    <button type="reset" class="boton">Cancelar</button>
+                    <button type="button" class="boton" onclick="redirigirCarrito()">Cancelar</button>
                     <button type="submit" class="boton">Continuar</button>
                 </div>
             </form>
