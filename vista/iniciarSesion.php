@@ -103,25 +103,34 @@ unset($_SESSION['errors']); // Limpiar errores después de mostrarlos
     </style>
 </head>
 <body>
+        <!-- Mostrar errores -->
+        <?php if (!empty($errors)): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <?php foreach ($errors as $error): ?>
+                            <?php echo $error . "<br>"; ?>
+                        <?php endforeach; ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <?php endif; ?>
 
     <div class="contenedorPrincipal">
         <div class="contenidoCuadro">
-            <form class="formulario" action="../controlador/login.php" method="POST">
-                <label for="correo">Correo electrónico:</label>
-                <input type="email" name="correo" id="correo" placeholder="ejemplo@ejemplo.es" required>
+        <form class="formulario" action="../controlador/login.php" method="POST">
+        <label for="correo">&nbsp;&nbsp;&nbsp;Correo electrónico:</label>
+        <input type="email" name="correo" id="correo" name="correo" placeholder="ejemplo@ejemplo.es" required>
 
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" placeholder="********" required>
+        <label for="password">&nbsp;&nbsp;&nbsp;Contraseña:</label>
+        <input type="password" name="password" id="password" name="password" placeholder="********" required>
 
-                <div class="g-recaptcha" data-sitekey="6Let1J8qAAAAAFUqHmEc1NgrOVlvdzBYGugSkyjl"></div>
-                <br>
-                <a href="../controlador/registrarse.php">¿No tienes cuenta? Regístrate aquí.</a>
+        <div class="g-recaptcha" data-sitekey="6Let1J8qAAAAAFUqHmEc1NgrOVlvdzBYGugSkyjl"></div>
+        <br>
+        <a href="../controlador/registrarse.php">¿No tienes cuenta? Regístrate aquí.</a>
 
-                <div class="botom">
-                    <button type="button" onclick="location.href='../controlador/registrarse.php'">Cancelar</button>
-                    <button type="submit">Confirmar</button>
-                </div>
-            </form>
+        <div class="botom">
+        <button type="button" onclick="'../controlador/registrarse.php'">Cancelar</button>
+        <button type="submit">Confirmar</button>
+    </div>
+    </form>
         </div>
     </div>
 </body>

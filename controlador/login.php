@@ -11,7 +11,7 @@ $success = false;  // Controla si el login fue exitoso
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = isset($_POST['correo']) ? $_POST['correo'] : '';
-    $contrasena = isset($_POST['contrasena']) ? $_POST['contrasena'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
     $captcha = isset($_POST['g-recaptcha-response']) ? $_POST['g-recaptcha-response'] : '';
     $ip = $_SERVER['REMOTE_ADDR'];
     $secretKey = "6Let1J8qAAAAAOIFZF2Iov1IJVPBzi8fZ7bt7IcF";
@@ -25,17 +25,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Validar campos vacíos
-    if (empty($correo) || empty($contrasena)) {
+    if (empty($correo) || empty($password)) {
         $errors[] = "El correo y la contraseña son obligatorios.";
     }
 
     if (empty($errors)) {
-        $correo = $conexion->real_escape_string($correo);
-        $contrasena = $conexion->real_escape_string($contrasena);
+        $correo = $conn->real_escape_string($correo);
+        $password = $conn->real_escape_string($password);
 
         // Verificar intentos fallidos
         $queryAttempts = "SELECT attempts, last_attempt FROM login_attempts WHERE email = '$correo'";
-        $resultAttempts = $conexion->query($queryAttempts);
+        $resultAttempts = $conn->query($queryAttempts);
 
         if ($resultAttempts && $resultAttempts->num_rows > 0) {
             $rowAttempts = $resultAttempts->fetch_assoc();
@@ -44,20 +44,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $remaining = $block_time - $time_elapsed;
                 $errors[] = "Cuenta bloqueada. Inténtalo en " . ceil($remaining / 60) . " minutos.";
             } elseif ($time_elapsed >= $block_time) {
-                $conexion->query("UPDATE login_attempts SET attempts = 0 WHERE email = '$correo'");
+                $conn->query("UPDATE login_attempts SET attempts = 0 WHERE email = '$correo'");
             }
         }
 
         // Verificar usuario
         if (empty($errors)) {
-            $queryUsuario = "SELECT id_usuario, nombre, email, contraseña, tipo_usuario FROM usuario WHERE email = '$correo'";
-            $resultUsuario = $conexion->query($queryUsuario);
+            $queryUsuario = "SELECT id_usuario, nombre, email, password, tipo_usuario FROM usuario WHERE email = '$correo'";
+            $resultUsuario = $conn->query($queryUsuario);
 
             if ($resultUsuario && $resultUsuario->num_rows > 0) {
                 $row = $resultUsuario->fetch_assoc();
 
-                if ($contrasena == $row['contraseña']) {
-                    $conexion->query("DELETE FROM login_attempts WHERE email = '$correo'");
+                if ($password == $row['password']) {
+                    $conn->query("DELETE FROM login_attempts WHERE email = '$correo'");
                     $_SESSION['loggedin'] = true;
                     $_SESSION['id_usuario'] = $row['id_usuario'];
                     $_SESSION['nombre'] = $row['nombre'];
@@ -81,9 +81,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Registrar intentos fallidos
             if (!empty($errors)) {
                 if ($resultAttempts && $resultAttempts->num_rows > 0) {
-                    $conexion->query("UPDATE login_attempts SET attempts = attempts + 1, last_attempt = CURRENT_TIMESTAMP WHERE email = '$correo'");
+                    $conn->query("UPDATE login_attempts SET attempts = attempts + 1, last_attempt = CURRENT_TIMESTAMP WHERE email = '$correo'");
                 } else {
-                    $conexion->query("INSERT INTO login_attempts (email, attempts) VALUES ('$correo', 1)");
+                    $conn->query("INSERT INTO login_attempts (email, attempts) VALUES ('$correo', 1)");
                 }
             }
         }
@@ -91,7 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // Pasar errores a iniciarSesion.php
  
     // Cerrar conexión
-    $conexion->close();
+    $conn->close();
     $_SESSION['errors'] = $errors;
     header("Location: ../controlador/iniciarSesion.php");
     exit;
