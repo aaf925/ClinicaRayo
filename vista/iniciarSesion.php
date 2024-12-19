@@ -103,23 +103,15 @@ unset($_SESSION['errors']); // Limpiar errores después de mostrarlos
     </style>
 </head>
 <body>
-        <!-- Mostrar errores -->
-        <?php if (!empty($errors)): ?>
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <?php foreach ($errors as $error): ?>
-                            <?php echo $error . "<br>"; ?>
-                        <?php endforeach; ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                <?php endif; ?>
+
     <div class="contenedorPrincipal">
         <div class="contenidoCuadro">
             <form class="formulario" action="../controlador/login.php" method="POST">
                 <label for="correo">Correo electrónico:</label>
                 <input type="email" name="correo" id="correo" placeholder="ejemplo@ejemplo.es" required>
 
-                <label for="contrasena">Contraseña:</label>
-                <input type="password" name="contrasena" id="contrasena" placeholder="********" required>
+                <label for="password">Contraseña:</label>
+                <input type="password" name="password" id="password" placeholder="********" required>
 
                 <div class="g-recaptcha" data-sitekey="6Let1J8qAAAAAFUqHmEc1NgrOVlvdzBYGugSkyjl"></div>
                 <br>

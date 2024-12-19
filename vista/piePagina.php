@@ -210,10 +210,10 @@
         </div>
         <!-- Enlaces secundarios -->
         <div class="enlaces">
-            <a href="#">Aviso Legal</a>
-            <a href="#">Términos de Uso</a>
-            <a href="#">Política de Privacidad</a>
-            <a href="#">Cookies</a>
+            <a href="../controlador/avisolegal.php">Aviso Legal</a>
+            <a href="../controlador/terminosdeuso.php">Términos de Uso</a>
+            <a href="../controlador/politicadeprivacidad.php">Política de Privacidad</a>
+            <a href="../controlador/cookies.php">Cookies</a>
         </div>
     </div>
 </body>

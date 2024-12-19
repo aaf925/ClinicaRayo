@@ -259,7 +259,7 @@ function url_amigable($string) {
                     <td><a href="../vista/tienda.php">Tienda</a></td>
                     <td><a href="../vista/reservarCita.php">Reservar cita</a></td>
                     <td><a href="../vista/blog.php">Blog</a></td>
-                    <td><a href="../vista/contactanos.php">Contáctanos</a></td>
+                    <td><a href="../controlador/contactanos.php">Contáctanos</a></td>
                 </tr>
             </tbody>
         </table>
