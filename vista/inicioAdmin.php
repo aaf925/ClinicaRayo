@@ -10,9 +10,6 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['tipo_usuario'] !== 'administrado
     exit();
 }
 
-// Aquí ya se puede cargar el contenido de administrador
-require_once '../vista/menuAdmin.html';
-require_once '../vista/inicioAdmin.html';
 ?>
 
 <!DOCTYPE html>

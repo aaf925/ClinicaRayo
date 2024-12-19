@@ -269,12 +269,12 @@
 
 <div class="contenidoCuadro1">
  <div class="titulo1">ACCESOS DIRECTOS</div>
- <a href="">
+ <a href="../vista/gestionServicios.php">
                     <button class="botones1">Gestión de<br>
                         Servicios</button>
                     </a>
 
- <a href="">
+ <a href="../vista/gestionTiendaOnline.php">
                     <button class="botones2">Gestión de<br>
                         tienda online</button>
                     </a>
@@ -290,7 +290,7 @@
                     </a>
 
 
- <a href="">
+ <a href="../vista/gestionUsuarios.php">
                     <button class="botones5">Gestión de<br>
                         usuario</button>
                     </a>
@@ -313,7 +313,7 @@
     <div class="titulo2">GESTIÓN DE ACCESOS</div>
 
                     <button class="botones8">Resumen de accesos a la web</button>
-       
+
 
                     <button class="botones9">Resumen de compras de la web</button>
                  

@@ -1,8 +1,8 @@
 <?php
 require_once '../modelo/conexion.php';
 
-// Obtener el ID máximo de la tabla productos
-$sql_max_id = "SELECT MAX(id_producto) AS max_id FROM producto";
+// Obtener el ID máximo de la tabla servicios
+$sql_max_id = "SELECT MAX(id_servicio) AS max_id FROM servicio";
 $resultado = $conn->query($sql_max_id);
 
 if ($resultado && $fila = $resultado->fetch_assoc()) {
@@ -16,8 +16,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nombre = $conn->real_escape_string($_POST['nombre']);
         $precio = $conn->real_escape_string($_POST['precio']);
         $descripcion = $conn->real_escape_string($_POST['descripcion']);
-        $cantidad = $conn->real_escape_string($_POST['cantidad']);
-        $categoria = $conn->real_escape_string($_POST['categoria']);
 
         $imagen_nombre = basename($_FILES['imagen']['name']);
         $imagen_tmp = $_FILES['imagen']['tmp_name'];
@@ -35,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Verificar ruta antes del INSERT
             echo "Ruta de imagen a guardar: $ruta_guardar";
 
-            $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, categoria, imagen_url) 
-                    VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$categoria', '$ruta_guardar')";
+            $sql = "INSERT INTO servicio (id_servicio, nombre, precio, descripcion, imagen_url) 
+                    VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$ruta_guardar')";
 
             if ($conn->query($sql) === TRUE) {
-                echo "Producto añadido con éxito.";
-                header("Location: ../vista/darAltaProductoFormulario.php?success=true");
+                echo "Servicio añadido con éxito.";
+                header("Location: ../vista/darAltaServicioFormulario.php?success=true");
                 exit;
             } else {
                 echo "Error al insertar en la base de datos: " . $conn->error;
@@ -56,5 +54,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conn->close();
+$conexion->close();
 ?>

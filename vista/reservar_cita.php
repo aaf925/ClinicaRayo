@@ -5,7 +5,6 @@ include_once ('../modelo/conexion.php');
 if ($conn->connect_error) {
     die("Error de conexión: " . $conn->connect_error);
 }
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Capturar los datos del formulario
     $nombre = $_POST['nombre'];
@@ -28,12 +27,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Insertar en la tabla 'cita'
     $cadenaSQL2 = "INSERT INTO cita (id_cita, id_usuario, id_servicio, fecha_cita, hora_cita, estado)
-                   VALUES ('$newId', '0', '0', '$fecha_cita', '$hora_cita', 'pendiente')";
+                   VALUES ('$newId', '1', '0', '$fecha_cita', '$hora_cita', 'pendiente')";
     
     if ($conn->query($cadenaSQL2) === TRUE) {
         //echo "<script>alert('Cita agendada correctamente');</script>";
     } else {
-        echo "Error: " . $cadenaSQL . "<br>" . $conn->error;
+        echo "Error: " . $cadenaSQL2 . "<br>" . $conn->error;
     }
 
     // Insertar en la tabla 'datos_cita' (orden correcto)
@@ -44,14 +43,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error: " . $cadenaSQL . "<br>" . $conn->error;
     }
+}
+
+
     $fechas = [];
-    $resultado = $conn->query("SELECT dia, estado FROM admin_cita");
+    $resultado = $conn->query("SELECT DATE_FORMAT(dia, '%Y-%m-%d') AS dia, estado FROM admin_cita");
     while ($row = $resultado->fetch_assoc()) {
     $fechas[] = $row; // Agregar todas las fechas y estados a un array
 }
 
     $conn->close();
-}
+
 ?>
 
 
@@ -228,6 +230,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </style>
 </head>
 <body>
+    
     <div class="container">
         <!-- Formulario -->
         <div class="form-container">
@@ -235,19 +238,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <form action="" method="POST">
     <div class="form-group">
         <label for="nombre">Nombre</label>
-        <input type="text" id="nombre" name="nombre" placeholder="Ejemplo">
+        <input type="text" id="nombre" name="nombre" placeholder="Ejemplo" required
+           pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" 
+           title="El nombre solo puede contener letras y espacios.">
     </div>
     <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="correo@gmail.com">
+        <input type="email" id="email" name="email" placeholder="correo@gmail.com" required pattern="[a-zA-Z0-9._%+-]+@gmail\.com" 
+        title="Debe ser una dirección de correo válida y terminar en @gmail.com">
     </div>
     <div class="form-group">
         <label for="telefono">Teléfono</label>
-        <input type="tel" id="telefono" name="telefono" placeholder="XXX XX XX XX">
+        <input type="tel" id="telefono" name="telefono" placeholder="XXX XX XX XX" required>
     </div>
     <div class="form-group">
         <label for="dia">Selecciona día</label>
-        <select id="dia" name="dia">
+        <select id="dia" name="dia" required>
             <option value="" disabled selected>Selecciona un día</option>
         </select>
     </div> 
@@ -273,7 +279,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Calendario -->
         <div class="calendar-container">
-            <h4>solo se aceptarán citas con datos correctos</h4>
+            <h4>Solo se aceptarán citas con datos correctos</h4>
             <div class="calendar-header">
                 <span class="arrow" id="prev">&#9664;</span>
                 <span id="monthYear"></span>
@@ -299,7 +305,7 @@ const next = document.getElementById("next");
 const dayDropdown = document.getElementById("dia");
 
 const months = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-let currentDate = new Date();
+var currentDate = new Date();
 // Fechas y estados obtenidos del servidor (PHP)
 const fechas = <?php echo json_encode($fechas); ?>;
 
@@ -340,7 +346,7 @@ function renderCalendar(date) {
         if (fecha) {
             if (fecha.estado === "completada") {
                     dayDiv.classList.add("completada");
-            } else {
+            } else if (fecha.estado === "disponible") {
                     dayDiv.classList.add("disponible");
                     }
                 }
@@ -380,6 +386,5 @@ next.addEventListener("click", () => {
 renderCalendar(currentDate);
 
     </script>
-
 </body>
 </html>

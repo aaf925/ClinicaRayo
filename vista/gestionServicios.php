@@ -19,7 +19,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             background-color: #f4f4f4;
         }
 
-        .gestionTiendaOnline {
+        .gestionServicios {
             background-color: #1A428A;
             width: 800px;
             margin: auto;
@@ -30,7 +30,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             text-align: center;
         }
 
-        .tituloTiendaOnline {
+        .tituloServicios {
             background-color: #111C4E;
             padding: 10px;
             border-radius: 8px;
@@ -38,7 +38,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             font-size: 1.5rem;
         }
 
-        .productos {
+        .servicios {
             background-color: #f4f4f4;
             color: black;
             padding: 20px;
@@ -48,7 +48,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             text-align: left;
         }
 
-        .producto-item {
+        .servicio-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -56,7 +56,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             border-bottom: 1px solid #ddd;
         }
 
-        .producto-item:last-child {
+        .servicio-item:last-child {
             border-bottom: none;
         }
 
@@ -93,60 +93,63 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
     <br>
     <br>
 
-    <div class="gestionTiendaOnline">
-        <div class="tituloTiendaOnline">
-            Tienda Online
+    <div class="gestionServicios">
+        <div class="tituloServicios">
+            Lista de Servicios
         </div>
 
         <!-- Formulario para enviar los IDs seleccionados -->
-        <form action="../vista/darDeBajaProducto.php" method="POST">
-            <div class="productos">
+        <form action="../vista/darDeBajaServicio.php" method="POST">
+            <div class="servicios">
                 <?php
                 require_once '../modelo/conexion.php';
-                
-                // Consulta para obtener los productos
-                $sql = "SELECT id_producto, nombre, precio, imagen_url, vendido, stock FROM producto";
+
+                // Consulta para obtener los servicios y contar citas relacionadas
+                $sql = "SELECT s.id_servicio, s.nombre, s.precio, s.imagen_url, COUNT(c.id_cita) AS citas_count 
+                        FROM servicio s
+                        LEFT JOIN cita c ON s.id_servicio = c.id_servicio
+                        GROUP BY s.id_servicio";
                 $resultado = $conn->query($sql);
 
                 if ($resultado && $resultado->num_rows > 0) {
                     while ($fila = $resultado->fetch_assoc()) {
-                        $cantidad_vendida = $fila['vendido'];
-                        $ganancia = $cantidad_vendida * $fila['precio'];
+                        $cantidad_citas = $fila['citas_count'];
+                        $ganancia = $cantidad_citas * $fila['precio'];
 
-                        echo "<div class='producto-item'>";
-                        echo "ID: {$fila['id_producto']} | Producto: {$fila['nombre']} | P/U: {$fila['precio']} € | Stock: {$fila['stock']} | Vendido: {$fila['vendido']} | Ganancia: $ganancia €";
-                        echo "<input type='checkbox' name='productos[]' value='{$fila['id_producto']}'> "; // Checkbox con el ID
-                        echo "<input type='hidden' name='imagenes[{$fila['id_producto']}]' value='{$fila['imagen_url']}'>"; // Ruta de la imagen
+                        echo "<div class='servicio-item'>";
+                        echo "ID: {$fila['id_servicio']} | {$fila['nombre']} | Precio: {$fila['precio']} € | Citas: {$cantidad_citas} | Ganancia: {$ganancia} €";
+                        echo "<input type='checkbox' name='servicios[]' value='{$fila['id_servicio']}'> "; // Checkbox con el ID
+                        echo "<input type='hidden' name='imagenes[{$fila['id_servicio']}]' value='{$fila['imagen_url']}'>"; // Ruta de la imagen
                         echo "</div>";
                     }
                 } else {
-                    echo "<p>No hay productos disponibles.</p>";
+                    echo "<p>No hay servicios disponibles.</p>";
                 }
                 $conn->close();
                 ?>
             </div>
             <script>
-                function modificarProducto() {
+                function modificarServicio() {
                     // Obtener todos los checkboxes seleccionados
-                    const checkboxes = document.querySelectorAll("input[name='productos[]']:checked");
+                    const checkboxes = document.querySelectorAll("input[name='servicios[]']:checked");
 
-                    // Si no hay exactamente un producto seleccionado, mostrar una alerta
+                    // Si no hay exactamente un servicio seleccionado, mostrar una alerta
                     if (checkboxes.length !== 1) {
-                        alert("Debe seleccionar exactamente un producto para modificar.");
+                        alert("Debe seleccionar exactamente un servicio para modificar.");
                         return;
                     }
 
-                    // Obtener el ID del producto seleccionado
-                    const idProducto = checkboxes[0].value;
+                    // Obtener el ID del servicio seleccionado
+                    const idServicio = checkboxes[0].value;
 
-                    // Redirigir a modificarProductoFormulario.php con el ID como parámetro GET
-                    window.location.href = `../vista/modificarProductoFormulario.php?id_producto=${idProducto}`;
+                    // Redirigir a modificarServicioFormulario.php con el ID como parámetro GET
+                    window.location.href = `../vista/modificarServicioFormulario.php?id_servicio=${idServicio}`;
                 }
             </script>
             <div class="buttons">
-                <button type="button" onclick="window.location.href='../vista/darAltaProductoFormulario.php';">Dar de alta nuevo producto</button>
-                <button type="button" onclick="modificarProducto()">Modificar productos</button>
-                <button type="submit" name="borrar">Dar de baja producto</button>
+                <button type="button" onclick="window.location.href='../vista/darAltaServicioFormulario.php';">Dar de alta nuevo servicio</button>
+                <button type="button" onclick="modificarServicio()">Modificar servicio</button>
+                <button type="submit" name="borrar">Dar de baja servicio</button>
             </div>            
         </form>
     </div>

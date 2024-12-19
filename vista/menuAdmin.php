@@ -101,7 +101,7 @@
                 <a href="inicioAdmin.php">
                     <button class="boton">Inicio</button>
                 </a>
-                <a href="panelAdmin.php">
+                <a href="../controlador/panelAdmin.php">
                     <button class="boton">Panel Administrador</button>
                 </a>
                 <a href="perfilAdmin.php">

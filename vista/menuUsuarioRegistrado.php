@@ -227,10 +227,10 @@ function url_amigable($string) {
 
         <!-- Botones -->
         <div class="botones">
-            <a href="iniciarSesion.php">
+            <a href="../controlador/menuUsuario.php">
                 <button class="boton">Perfil</button>
             </a>
-        </div>
+        </div>
     </div>
 
     <!-- Menú principal -->
