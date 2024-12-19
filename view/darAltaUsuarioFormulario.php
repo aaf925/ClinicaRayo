@@ -220,12 +220,12 @@
                 <div class = "inputNombre">
                     <label for="nombre">Nombre:</label>
                     <br>
-                    <input type="text" id="nombre" name="nombre" required placeholder="Nombre">
+                    <input type="text" id="nombre" name="nombre" required placeholder="Nombre" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios en blanco">
                 </div>
                 <div class = "inputApellidos">
                     <label for="apellidos">Apellidos:</label>
                     <br>
-                    <input type="text" id="apellidos" name="apellidos" required placeholder="Apellidos">
+                    <input type="text" id="apellidos" name="apellidos" required placeholder="Apellidos" pattern="[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+" title="Solo se permiten letras y espacios en blanco">
                 </div>
                 <div class = "inputTipoUsuario">
                     <label for="tipoUsuario">Tipo de usuario:</label>
@@ -239,13 +239,14 @@
                 <div class="inputTelefono">
                     <label for="telefono">Telefono:</label>
                     <br>
-                    <input type="tel" id="telefono" name="telefono" required placeholder="Ingrese el telefono" oninput="validarTelefono(this)">
+                    <input type="tel" id="telefono" name="telefono" required placeholder="Ingrese el telefono" pattern="[6-9]\d{8}" oninput="validarTelefono(this)">
                     <div id="telefonoError" class="error"></div>
                 </div>
                 <div class = "inputCorreo">
                     <label for="correo" id="correo">Correo electrónico:</label>
                     <br>
-                    <input type="text" id="correo" name="correo" required placeholder="Ingrese el correo">
+                    <input type="text" id="correo" name="correo" required placeholder="Ingrese el correo" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Ingrese un correo electrónico válido">
+
                 </div>
                 <div class = "inputContrasena">
                     <label for="inputContrasena" id="contrasena">Contraseña:</label>
