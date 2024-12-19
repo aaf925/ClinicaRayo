@@ -1,3 +1,35 @@
+<?php
+
+include_once('../modelo/conexion.php');
+
+// Verificar si el usuario está autenticado
+if (!isset($_SESSION['id_usuario'])) {
+    header("Location: ../controlador/inicioUsuarioNoRegistrado.php");
+    exit();
+}
+
+// Obtener el id del usuario
+$id_usuario = $_SESSION['id_usuario'];
+
+// Consultar los datos del usuario
+$query = "SELECT nombre, apellido, email, telefono, tipo_usuario FROM usuario WHERE id_usuario = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $id_usuario);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
+
+// Cerrar la conexión
+$stmt->close();
+$conn->close();
+
+// Si no se encuentran datos, redirigir
+if (!$user) {
+    header("Location: ../controlador/inicioUsuarioNoRegistrado.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -17,12 +49,13 @@
 
         .container {
             width: 90%;
+            
             max-width: 1200px;
-            margin: 20px auto;
+            margin: 40px auto;
             display: flex;
             flex-wrap: wrap;
             gap: 40px;
-            background-color:rgb(138, 26, 26);
+            background-color: #f4f4f4;
         }
 
         .section-title {
@@ -41,6 +74,7 @@
             color: white;
             border-radius: 8px;
             padding: 20px;
+            margin-left: 10px;
             margin-bottom: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
@@ -78,8 +112,8 @@
         .user-info {
             width: 100%;
             background-color: #f4f4f4;
-            padding: 20px;
-            border: 1px solid #ccc;
+            padding: 40px;
+            margin-left: 100px;
             border-radius: 8px;
             display: flex;
             flex-wrap: wrap;
@@ -94,10 +128,11 @@
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
+            
         }
 
         .info-group input {
-            width: 100%;
+            width: 60%;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -105,8 +140,8 @@
         }
 
         .logout-btn {
-            margin-top: 20px;
-            background-color: #D32F2F;
+            
+            background-color:  #0D1734;
             border: none;
         }
     </style>
@@ -126,7 +161,9 @@
                 <p>Información principal de la cita: Fecha de la cita, persona que le atiende, lugar de la cita</p>
                 <button class="btn">Ver información completa</button>
             </div>
+            <a href="../controlador/historialCitas.php">
             <button class="btn full-width-btn">Ver historial de citas completo</button>
+                </a>
         </div>
 
         <!-- Historial de Compras -->
@@ -136,36 +173,44 @@
                 <h3>Pedido nºX - Fecha de Pedido</h3>
                 <p>Información principal del pedido: Número de productos comprados, total pagado, dirección de envío</p>
                 <button class="btn">Ver información completa</button>
+
+                
             </div>
             <div class="card">
                 <h3>Pedido nºX - Fecha de Pedido</h3>
                 <p>Información principal del pedido: Número de productos comprados, total pagado, dirección de envío</p>
                 <button class="btn">Ver información completa</button>
             </div>
+            <a href="../controlador/historialCompras.php">
             <button class="btn full-width-btn">Ver historial de compras completo</button>
+            </a>
+            
         </div>
-
+        
         <!-- Información de Usuario -->
-        <div class="section-title" style="width: 100%;">Información de Usuario:</div>
         <div class="user-info">
-            <div class="info-group">
-                <label for="username">Nombre de Usuario:</label>
-                <input type="text" id="username" value="usuarioEjemplo01" readonly>
-            </div>
-            <div class="info-group">
-                <label for="email">Correo electrónico:</label>
-                <input type="email" id="email" value="ejemplo@ejemplo.es" readonly>
-            </div>
-            <div class="info-group">
-                <label for="name">Nombre y Apellidos:</label>
-                <input type="text" id="name" value="Usuario Apellido1 Apellido2" readonly>
-            </div>
-            <div class="info-group">
-                <label for="phone">Número de Teléfono:</label>
-                <input type="text" id="phone" value="123456789" readonly>
-            </div>
-            <button class="btn logout-btn">Cerrar Sesión</button>
-        </div>
+    <div class="info-group">
+        <label for="nombre">Nombre de Usuario:</label>
+        <input type="nombre" id="nombre" value="<?php echo htmlspecialchars($user['nombre']); ?>" readonly>
+    </div>
+    <div class="info-group">
+        <label for="email">Correo electrónico:</label>
+        <input type="email" id="email" value="<?php echo htmlspecialchars($user['email']); ?>" readonly>
+    </div>
+    <div class="info-group">
+        <label for="apellido">Apellido:</label>
+        <input type="text" id="apellido" value="<?php echo htmlspecialchars($user['apellido']); ?>" readonly>
+    </div>
+    <div class="info-group">
+        <label for="phone">Número de Teléfono:</label>
+        <input type="text" id="phone" value="<?php echo htmlspecialchars($user['telefono']); ?>" readonly>
+    </div>
+    <a href="../controlador/inicioUsuarioNoRegistrado.php">
+        <button class="btn logout-btn">Cerrar Sesión</button>
+    </a>
+</div>
+
+    </div>
     </div>
 </body>
 </html>
