@@ -153,6 +153,24 @@
 
     </style>
     <script>
+
+        // Función para validar el formato del correo electrónico
+        function validarCorreo(input) {
+            const correo = input.value.trim();
+            const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para validar correos
+            const mensajeError = document.getElementById("correoError");
+
+            if (!regexCorreo.test(correo)) {
+                mensajeError.textContent = "Por favor, introduzca un correo electrónico válido.";
+                mensajeError.style.display = "block";
+                return false;
+            } else {
+                mensajeError.textContent = "";
+                mensajeError.style.display = "none";
+                return true;
+            }
+        }
+
         // Función para validar el formato del teléfono
         function validarTelefono(input) {
             const telefono = input.value.trim();
@@ -188,6 +206,9 @@
 
         // Función para validar todo al enviar el formulario
         function validarFormulario(event) {
+            const correoInput = document.getElementById("correo");
+            const correoValido = validarCorreo(correoInput);
+
             const telefonoInput = document.getElementById("telefono");
             const telefonoValido = validarTelefono(telefonoInput);
 
@@ -195,7 +216,7 @@
             const contrasenaValida = contrasenaError.textContent === "";
 
             // Prevenir envío si hay errores
-            if (!telefonoValido || !contrasenaValida) {
+            if (!telefonoValido || !contrasenaValida || !correoValido) {
                 event.preventDefault();
                 return false;
             }
@@ -243,10 +264,10 @@
                     <div id="telefonoError" class="error"></div>
                 </div>
                 <div class = "inputCorreo">
-                    <label for="correo" id="correo">Correo electrónico:</label>
+                    <label for="correo">Correo electrónico:</label>
                     <br>
-                    <input type="text" id="correo" name="correo" required placeholder="Ingrese el correo" pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}" title="Ingrese un correo electrónico válido">
-
+                    <input type="text" id="correo" name="correo" required placeholder="Ingrese el correo" oninput="validarCorreo(this)">
+                    <div id="correoError" class="error"></div>
                 </div>
                 <div class = "inputContrasena">
                     <label for="inputContrasena" id="contrasena">Contraseña:</label>
