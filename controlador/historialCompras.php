@@ -4,11 +4,11 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['tipo_usuario'] !== 'cliente') {
     
     // Si no es administrador o no ha iniciado sesión, redirigir a la página de inicio de sesión
-    header("Location: iniciarSesion.php");
+    header("Location: ../vista/iniciarSesion.php");
     exit();
 }
 
 require_once '../vista/menuUsuario.php';
 require_once '../vista/historialCompras.php';
-require_once '../vista/piePagina.html'; 
+require_once '../vista/piePagina.php'; 
 ?>

@@ -136,8 +136,8 @@
         <table class="tabla_menu">
             <tbody>
                 <tr>
-                    <td><a href="../controlador/sobreNosotros.php">Historial Compras</a></td>
-                    <td><a href="tienda.php">Historial Citas</a></td>
+                    <td><a href="../controlador/historialCompras.php">Historial Compras</a></td>
+                    <td><a href="../controlador/historialCitas.php">Historial Citas</a></td>
                     <td><a href="reservarCita.php">Modificar Datos</a></td>
                 </tr>
             </tbody>
