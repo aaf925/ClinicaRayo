@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Citas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        .cita {
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            width: 300px;
+            display: inline-block;
+            vertical-align: top;
+            background-color: #fff;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        h2 {
+            margin: 0 0 10px 0;
+        }
+        p {
+            margin: 5px 0;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Citas</h1>
+    <div id="citas-container"></div>
+
+    <script>
+        // Función para cargar citas desde el backend
+        async function cargarCitas() {
+            try {
+                // Llama al archivo PHP que devuelve las citas
+                const response = await fetch('../modelo/citas.php');
+                const citas = await response.json();
+
+                // Selecciona el contenedor donde se mostrarán las citas
+                const container = document.getElementById('citas-container');
+
+                // Si no hay citas, muestra un mensaje
+                if (citas.length === 0) {
+                    container.innerHTML = '<p>No hay citas disponibles.</p>';
+                    return;
+                }
+
+                // Itera sobre las citas y crea los elementos HTML
+                citas.forEach((cita, index) => {
+                    const citaDiv = document.createElement('div');
+                    citaDiv.className = 'cita';
+
+                    // Genera el contenido de cada cita
+                    citaDiv.innerHTML = `
+                        <h2>Cita ${index + 1}</h2>
+                        <p><strong>Lugar:</strong> ${cita.lugar}</p>
+                        <p><strong>Fecha:</strong> ${cita.fecha}</p>
+                        <p><strong>Hora:</strong> ${cita.hora}</p>
+                        <p><strong>Asistencia:</strong> ${cita.asistencia == 1 ? "Sí" : "No"}</p>
+                        <p><strong>Atendido por:</strong> ${cita.atendido_por}</p>
+                        <p><strong>Calificación:</strong> ${cita.calificacion || "Sin calificación"}</p>
+                    `;
+
+                    // Agrega la cita al contenedor
+                    container.appendChild(citaDiv);
+                });
+            } catch (error) {
+                console.error('Error cargando las citas:', error);
+                document.getElementById('citas-container').innerHTML = '<p>Error cargando las citas.</p>';
+            }
+        }
+
+        // Llama a la función para cargar las citas cuando la página se carga
+        window.onload = cargarCitas;
+    </script>
+</body>
+</html>
