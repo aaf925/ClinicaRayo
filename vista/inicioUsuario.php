@@ -10,7 +10,7 @@ if (!isset($conn) || $conn->connect_error) {
 }
 
     // Consulta SQL para obtener servicios
-    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio";
+    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio WHERE id_servicio>0";
     $result = $conn->query($sql);
 
     // Verificar si la consulta fue exitosa
@@ -256,14 +256,25 @@ $conn->close();
             background-color: #f4f4f4; 
 }
 
-        /* Estilo de cada recuadro de reseñas */
+        /* Estilo para las reseñas */
+        .contenedor-reseñas {
+            max-width: 2000px;
+            width: 90%;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 150px;
+            gap: 160px;
+            margin-bottom: 100px;
+            background-color: #f4f4f4; 
+        }
+
+        /* Recuadro de reseña */
         .recuadro-reseña {
-            width: 568%;
+            width: 48%; /* Establecer el ancho a un 48% para que se ajusten dos por fila */
             border: 1px solid #f4f4f4;
             border-radius: 8px;
             padding: 15px;
             background-color: #f4f4f4;
-
         }
 
         /* Título de las reseñas */
@@ -311,6 +322,20 @@ $conn->close();
             color: #666;
             font-size: 0.9rem;
         }
+
+        /* Media query para pantallas más pequeñas */
+        @media (max-width: 768px) {
+        .contenedor-reseñas {
+            flex-direction: column; /* Muestra las reseñas en columna */
+            gap: 20px; /* Reduce el espacio entre reseñas */
+            justify-content: center;
+        }
+
+        .recuadro-reseña {
+            width: 100%; /* Hace que los recuadros de reseñas ocupen todo el ancho */
+            margin: 0 auto; /* Centra los recuadros */
+        }
+    }
 
 
 

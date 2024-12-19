@@ -6,9 +6,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['productos'])) {
 
     foreach ($productos as $id) {
         // Obtener la ruta de la imagen desde la base de datos
-        $id = $conexion->real_escape_string($id);
+        $id = $conn->real_escape_string($id);
         $sql_select = "SELECT imagen_url FROM producto WHERE id_producto = '$id'";
-        $resultado = $conexion->query($sql_select);
+        $resultado = $conn->query($sql_select);
 
         if ($resultado && $fila = $resultado->fetch_assoc()) {
             $ruta_imagen = $fila['imagen_url'];
@@ -21,10 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['productos'])) {
 
         // Eliminar el producto de la base de datos
         $sql_delete = "DELETE FROM producto WHERE id_producto = '$id'";
-        $conexion->query($sql_delete);
+        $conn->query($sql_delete);
     }
 
-    $conexion->close();
+    $conn->close();
 
     // Redirigir de vuelta a la página principal con mensaje de éxito
     header("Location: gestionTiendaOnline.php?borrado=exito");

@@ -10,7 +10,7 @@ if (!isset($conn) || $conn->connect_error) {
 }
 
     // Consulta SQL para obtener servicios
-    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio";
+    $sql = "SELECT id_servicio, nombre, imagen_url FROM servicio WHERE id_servicio>0";
     $result = $conn->query($sql);
 
     // Verificar si la consulta fue exitosa
@@ -196,21 +196,42 @@ function url_amigable($string) {
         .desplegable:hover .menu-desplegable {
             display: block; 
         }
+
+        /* Ajuste para pantallas pequeñas (menos de 768px) */
+@media (max-width: 768px) {
+    .botones {
+        margin-left: 20px; /* Alinea los botones más a la izquierda */
+        gap: 20px; /* Reduce el espacio entre los botones */
+    }
+
+    .boton {
+        width: 100px; /* Ajusta el tamaño de los botones en pantallas pequeñas */
+        height: 35px;
+        font-size: 14px; /* Reduce el tamaño del texto */
+    }
+
+    /* Estilo del logo */
+    .logo {
+        max-width: 50%; /* Ajusta el tamaño del logo según el ancho de la pantalla */
+        height: auto; /* Mantiene la proporción del logo */
+    }
+}
+
     </style>
 </head>
 <body>
     <!-- Cabecera -->
     <div class="cabecera">
-        <a href="inicioUsuarioNoRegistrado.php">
+        <a href="../controlador/inicioUsuarioNoRegistrado.php">
             <img src="../controlador/images/LogoBlanco.png" alt="Logo de la Clínica" class="logo">
         </a>
 
         <!-- Botones -->
         <div class="botones">
-            <a href="iniciarSesion.php">
+            <a href="../controlador/iniciarSesion.php">
                 <button class="boton">Inicio Sesión</button>
             </a>
-            <a href="registrarse.php">
+            <a href="../controlador/registrarse.php">
                 <button class="boton">Registrarse</button>
             </a>
         </div>
@@ -221,7 +242,7 @@ function url_amigable($string) {
         <table class="tabla_menu">
         <tbody>
                 <tr>
-                    <td><a href="../vista/sobreNosotros.php">Sobre nosotros</a></td>
+                    <td><a href="../controlador/sobreNosotros.php">Sobre nosotros</a></td>
                     <td class="desplegable">
                         <a href="#">Servicios <span class="flecha">&#9662;</span></a>
                         <ul class="menu-desplegable">

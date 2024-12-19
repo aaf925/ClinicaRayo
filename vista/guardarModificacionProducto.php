@@ -3,16 +3,16 @@ require_once '../modelo/conexion.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == UPLOAD_ERR_OK) {
-        $id_producto = $conexion->real_escape_string($_POST['id_producto']);
-        $nombre = $conexion->real_escape_string($_POST['nombre']);
-        $precio = $conexion->real_escape_string($_POST['precio']);
-        $descripcion = $conexion->real_escape_string($_POST['descripcion']);
-        $stock = $conexion->real_escape_string($_POST['cantidad']);
-        $categoria = $conexion->real_escape_string($_POST['categoria']);
+        $id_producto = $conn->real_escape_string($_POST['id_producto']);
+        $nombre = $conn->real_escape_string($_POST['nombre']);
+        $precio = $conn->real_escape_string($_POST['precio']);
+        $descripcion = $conn->real_escape_string($_POST['descripcion']);
+        $stock = $conn->real_escape_string($_POST['cantidad']);
+        $categoria = $conn->real_escape_string($_POST['categoria']);
         
         // Obtener la imagen anterior
         $sql_select = "SELECT imagen_url FROM producto WHERE id_producto = '$id_producto'";
-        $resultado = $conexion->query($sql_select);
+        $resultado = $conn->query($sql_select);
         $imagen_anterior = ($resultado && $fila = $resultado->fetch_assoc()) ? __DIR__ . '/' . $fila['imagen_url'] : null;
 
         // Subir nueva imagen
@@ -41,12 +41,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } else {
         // Actualizar sin cambiar la imagen
-        $id_producto = $conexion->real_escape_string($_POST['id_producto']);
-        $nombre = $conexion->real_escape_string($_POST['nombre']);
-        $precio = $conexion->real_escape_string($_POST['precio']);
-        $descripcion = $conexion->real_escape_string($_POST['descripcion']);
-        $stock = $conexion->real_escape_string($_POST['cantidad']);
-        $categoria = $conexion->real_escape_string($_POST['categoria']);
+        $id_producto = $conn->real_escape_string($_POST['id_producto']);
+        $nombre = $conn->real_escape_string($_POST['nombre']);
+        $precio = $conn->real_escape_string($_POST['precio']);
+        $descripcion = $conn->real_escape_string($_POST['descripcion']);
+        $stock = $conn->real_escape_string($_POST['cantidad']);
+        $categoria = $conn->real_escape_string($_POST['categoria']);
 
         $sql = "UPDATE producto 
                 SET nombre = '$nombre', 
@@ -57,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE id_producto = '$id_producto'";
     }
 
-    if ($conexion->query($sql)) {
-        header("Location: modificarProductoFormulario.php?id_producto=$id_producto&modificacion=exito");
+    if ($conn->query($sql)) {
+        header("Location: ../vista/modificarProductoFormulario.php?id_producto=$id_producto&modificacion=exito");
         exit();
     } else {
-        echo "Error al actualizar el producto: " . $conexion->error;
+        echo "Error al actualizar el producto: " . $conn->error;
     }
 }
 
-$conexion->close();
+$conn->close();
 ?>

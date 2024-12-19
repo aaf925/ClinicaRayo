@@ -115,6 +115,40 @@
             height: 24px;
             margin-right: 8px;
         }
+
+        /* Media Queries para pantallas pequeñas */
+@media (max-width: 768px) {
+    /* Hacer la imagen más pequeña */
+    .logop {
+        height: 120px; /* Ajusta el tamaño según lo necesites */
+        left: 0;
+        top: 0;
+    }
+
+    .pie-de-pagina .contenidop {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    /* Ajuste de márgenes y distribución en el pie de página */
+    .pie-de-pagina .columna {
+        align-items: center;
+    }
+
+    .enlaces {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .enlaces a {
+        margin: 10px 0;
+    }
+
+    .social a {
+        margin-bottom: 5px;
+    }
+}
     </style>
 </head>
 <body>

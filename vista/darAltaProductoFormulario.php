@@ -177,7 +177,7 @@
 </head>
 <body>
     <!-- Incluye el menú superior -->
-    <?php require_once 'menuAdmin.php'; ?>
+    <?php require_once '../vista/menuAdmin.php'; ?>
 
     <br>
     <br>
@@ -216,18 +216,18 @@
                     <input type="file" id="imagen" name="imagen" accept = ".jpg, .jpeg, .png" required>
                 </div>
                 <div class="botonesFormulario">
-                    <button class="botonCancelar" type="button" onclick="window.location.href='gestionTiendaOnline.php';">Cancelar</button>
+                    <button class="botonCancelar" type="button" onclick="window.location.href='../vista/gestionTiendaOnline.php';">Cancelar</button>
                     <button class = "botonGuardar" type="submit">Guardar</button>
                 </div>
             </form>
             <?php
-                include('darAltaProducto.php');
+                include('../vista/darAltaProducto.php');
             ?>
         </div>
     </div>
     <!-- Modal -->
     <?php if (isset($_GET['success']) && $_GET['success'] === 'true'): ?>
-    <div class="modal-overlay" onclick="window.location.href='gestionTiendaOnline.php';">
+    <div class="modal-overlay" onclick="window.location.href='../vista/gestionTiendaOnline.php';">
         <div class="modal">
             Producto añadido correctamente<br>
             (Haga clic en cualquier parte para continuar)

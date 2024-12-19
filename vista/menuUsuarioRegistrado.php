@@ -154,6 +154,24 @@
         .desplegable:hover .menu-desplegable {
             display: block; 
         }
+
+        /* Media query para pantallas pequeñas */
+@media (max-width: 768px) {
+    .contenedor-tabla {
+        display: flex; /* Cambia a flexbox */
+        flex-wrap: wrap; /* Los elementos se envuelven en una nueva fila */
+        justify-content: space-around; /* Espacio distribuido entre los elementos */
+        position: relative; /* Cambio para que se ajuste mejor en pantallas pequeñas */
+        left: 50%; /* Centra el contenedor */
+        transform: translateX(-50%); /* Centra correctamente el contenedor */
+    }
+
+    /* Ajustar los elementos de la tabla para que se distribuyan bien */
+    .contenedor-tabla > * {
+        flex: 0 0 45%; /* Cada elemento ocupa el 45% del ancho en pantallas pequeñas */
+        margin: 10px 0; /* Espacio entre filas */
+    }
+}
     </style>
 </head>
 <body>

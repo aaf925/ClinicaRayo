@@ -1,3 +1,49 @@
+<?php
+include_once('../modelo/conexion.php');
+include_once 'menuUsuarioNoRegistrado.php';
+
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Error de conexión: " . $conn->connect_error);
+}
+
+// Procesar el formulario
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Capturar los datos del formulario
+    $nombre = $_POST['nombre'];
+    $apellido = $_POST['apellidos'];
+    $email = $_POST['correo'];
+    $telefono = $_POST['telefono'];
+    $password = $_POST['contrasena']; 
+    $tipo_usuario = 'cliente'; // Valor por defecto, puede ser cambiado
+
+    // Consultar el valor máximo del 'id' en la tabla 'usuario'
+    $sql_max_id = "SELECT MAX(id_usuario) AS max_id FROM usuario";
+    $result = $conn->query($sql_max_id);
+
+    if ($result->num_rows > 0) {
+        // Obtener el valor máximo de id
+        $row = $result->fetch_assoc();
+        $nuevo_id = $row['max_id'] + 1; // Añadir 1 al valor máximo
+    } else {
+        // Si no hay registros en la tabla, se asigna el valor 1
+        $nuevo_id = 1;
+    }
+
+    // Insertar los datos en la tabla 'usuario'
+    $sql = "INSERT INTO usuario (id_usuario, nombre, apellido, email, telefono, tipo_usuario, fecha_registro, password)
+            VALUES ('$nuevo_id', '$nombre', '$apellido', '$email', '$telefono', '$tipo_usuario', NOW(), '$password')";
+
+    if ($conn->query($sql) === TRUE) {
+        echo "<script>alert('Usuario registrado exitosamente');</script>";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    // Cerrar la conexión
+    $conn->close();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -10,21 +56,27 @@
 
     <style>
 
+    /* Contenedor principal centrado */
+    .cuadroCentral {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh; /* Altura completa de la ventana */
+        background-color: #f5f5f5; /* Color de fondo */
+        padding: 20px; /* Evitar que el cuadro toque los bordes */
+        box-sizing: border-box;
+    }
+
      /* Estilo para el cuadro central */
      .contenidoCuadro {
-            width: 472px;
-            height: 536px;
-            background-color: #1A428A; 
-            border-radius: 5px; 
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            left: 500px;
-            top: 100px;
+        width: 100%;
+        max-width: 600px; /* Máximo ancho en pantallas grandes */
+        background-color: #1A428A;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+        color: white;
+        text-align: center;
         }
 
         /* Estilo para el formulario */
@@ -71,24 +123,20 @@
          /* Botones */
          
          .botom {
-            
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            position: relative;
-            top: 50px;
+            justify-content: space-between;
+            margin-top: 20px;
         }
 
         .botom button {
+            width: 48%;
             background-color: #0F1D40;
-            color: #ffffff;
+            color: white;
             border: none;
+            padding: 10px;
             border-radius: 5px;
-            padding: 13px 23px;
             cursor: pointer;
             font-size: 16px;
-            font-family: 'Alverta', sans-serif; 
-            font-weight: bold; 
         }
 
         .botom button:hover {
@@ -101,23 +149,23 @@
     <!-- CuadroCentral -->
     <div class="cuadroCentral">
         <div class="contenidoCuadro">
-            <form class="formulario">
+            <form class="formulario" form action="" method="POST">
 
 
                 <label for="nombre">&nbsp;&nbsp;&nbsp;Nombre:</label>
-                <input type="nombre" id="nombre" placeholder="*******" required>
+                <input type="nombre" name="nombre" id="nombre" placeholder="Nombre de usuario" required>
 
                 <label for="apellidos">&nbsp;&nbsp;&nbsp;Apellidos:</label>
-                <input type="apellidos" id="apellidos" placeholder="*******" required>
+                <input type="apellidos" name="apellidos" id="apellidos" placeholder="Apellidos" required>
 
                 <label for="correo">&nbsp;&nbsp;&nbsp;Correo electrónico:</label>
-                <input type="email" id="correo" placeholder="ejemplo@ejemplo.es" required>
+                <input type="email" name="correo" id="correo" placeholder="ejemplo@ejemplo.es" required>
 
                 <label for="contrasena">&nbsp;&nbsp;&nbsp;Contraseña:</label>
-                <input type="password" id="contrasena" placeholder="********" required>
+                <input type="password" name="contrasena" id="contrasena" placeholder="********" required>
 
                 <label for="telefono">&nbsp;&nbsp;&nbsp;Nº Telefono:</label>
-                <input type="telefono" id="telefono" placeholder="*******" required>
+                <input type="telefono" name="telefono" id="telefono" placeholder="Nº Telefono" required>
 
                 <div class="botom">
                 <button type="button">Cancelar</button>
@@ -129,16 +177,8 @@
             </form>
         </div>
     </div>
+<?php
+include_once 'piePagina.php';
+?>
 </body>
 </html>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>

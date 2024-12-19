@@ -3,7 +3,7 @@ require_once '../modelo/conexion.php';
 
 // Obtener el ID máximo de la tabla productos
 $sql_max_id = "SELECT MAX(id_producto) AS max_id FROM producto";
-$resultado = $conexion->query($sql_max_id);
+$resultado = $conn->query($sql_max_id);
 
 if ($resultado && $fila = $resultado->fetch_assoc()) {
     $id_nuevo = ($fila['max_id'] !== NULL) ? $fila['max_id'] + 1 : 1;
@@ -13,11 +13,11 @@ if ($resultado && $fila = $resultado->fetch_assoc()) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == UPLOAD_ERR_OK) {
-        $nombre = $conexion->real_escape_string($_POST['nombre']);
-        $precio = $conexion->real_escape_string($_POST['precio']);
-        $descripcion = $conexion->real_escape_string($_POST['descripcion']);
-        $cantidad = $conexion->real_escape_string($_POST['cantidad']);
-        $categoria = $conexion->real_escape_string($_POST['categoria']);
+        $nombre = $conn->real_escape_string($_POST['nombre']);
+        $precio = $conn->real_escape_string($_POST['precio']);
+        $descripcion = $conn->real_escape_string($_POST['descripcion']);
+        $cantidad = $conn->real_escape_string($_POST['cantidad']);
+        $categoria = $conn->real_escape_string($_POST['categoria']);
 
         $imagen_nombre = basename($_FILES['imagen']['name']);
         $imagen_tmp = $_FILES['imagen']['tmp_name'];
@@ -38,12 +38,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, categoria, imagen_url) 
                     VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$categoria', '$ruta_guardar')";
 
-            if ($conexion->query($sql) === TRUE) {
+            if ($conn->query($sql) === TRUE) {
                 echo "Producto añadido con éxito.";
-                header("Location: darAltaProductoFormulario.php?success=true");
+                header("Location: ./vista/darAltaProductoFormulario.php?success=true");
                 exit;
             } else {
-                echo "Error al insertar en la base de datos: " . $conexion->error;
+                echo "Error al insertar en la base de datos: " . $conn->error;
                 exit;
             }
         } else {
@@ -56,5 +56,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conexion->close();
+$conn->close();
 ?>

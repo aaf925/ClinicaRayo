@@ -3,11 +3,11 @@ require_once '../modelo/conexion.php';
 
 // Verificar si el ID del producto fue enviado
 if (isset($_GET['id_producto'])) {
-    $id_producto = $conexion->real_escape_string($_GET['id_producto']);
+    $id_producto = $conn->real_escape_string($_GET['id_producto']);
 
     // Consulta para obtener los datos del producto
     $sql = "SELECT * FROM producto WHERE id_producto = '$id_producto'";
-    $resultado = $conexion->query($sql);
+    $resultado = $conn->query($sql);
 
     if ($resultado && $fila = $resultado->fetch_assoc()) {
         ?>
@@ -182,7 +182,7 @@ if (isset($_GET['id_producto'])) {
             </style>
         </head>
         <body>
-            <?php require_once 'menuAdmin.php'; ?>
+            <?php require_once '../vista/menuAdmin.php'; ?>
             
             <br>
             <br>
@@ -190,7 +190,7 @@ if (isset($_GET['id_producto'])) {
             <div class="formulario">
                 <div class = "tituloFormulario"><h1 style = "color: white; padding: 10px; ">Formulario para Modificar un producto</h1></div>
                 <div class="inputsFormulario">
-                    <form action="guardarModificacionProducto.php" method="POST" enctype="multipart/form-data">
+                    <form action="../vista/guardarModificacionProducto.php" method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id_producto" value="<?php echo $id_producto; ?>">
 
                         <div class = "inputNombre">
@@ -235,14 +235,14 @@ if (isset($_GET['id_producto'])) {
                         </div>
 
                         <div class="botonesFormulario">
-                            <button class="botonCancelar" type="button" onclick="window.location.href='gestionTiendaOnline.php';">Cancelar</button>
+                            <button class="botonCancelar" type="button" onclick="window.location.href='../vista/gestionTiendaOnline.php';">Cancelar</button>
                             <button class = "botonGuardar" type="submit">Guardar</button>
                         </div>
                     </form>
                 </div>
             </div>
             <?php if (isset($_GET['modificacion']) && $_GET['modificacion'] === 'exito'): ?>
-            <div class="modal-overlay" onclick="window.location.href='gestionTiendaOnline.php';">
+            <div class="modal-overlay" onclick="window.location.href='../vista/gestionTiendaOnline.php';">
             <div class="modal">
                 Producto modificado correctamente<br>
                 (Haga clic en cualquier parte para continuar)
@@ -258,5 +258,5 @@ if (isset($_GET['id_producto'])) {
 } else {
     echo "Error: ID de producto no recibido.";
 }
-$conexion->close();
+$conn->close();
 ?>

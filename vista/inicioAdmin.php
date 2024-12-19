@@ -1,3 +1,20 @@
+<?php
+// Iniciar sesión
+session_start();
+
+// Verificar si el usuario ha iniciado sesión y si es administrador
+if (!isset($_SESSION['loggedin']) || $_SESSION['tipo_usuario'] !== 'administrador') {
+    
+    // Si no es administrador o no ha iniciado sesión, redirigir a la página de inicio de sesión
+    header("Location: iniciarSesion.php");
+    exit();
+}
+
+// Aquí ya se puede cargar el contenido de administrador
+require_once '../vista/menuAdmin.html';
+require_once '../vista/inicioAdmin.html';
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

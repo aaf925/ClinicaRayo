@@ -19,7 +19,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             background-color: #f4f4f4;
         }
 
-        .gestionTiendaOnline {
+        .gestionUsuarios {
             background-color: #1A428A;
             width: 800px;
             margin: auto;
@@ -30,7 +30,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             text-align: center;
         }
 
-        .tituloTiendaOnline {
+        .tituloUsuarios {
             background-color: #111C4E;
             padding: 10px;
             border-radius: 8px;
@@ -38,7 +38,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             font-size: 1.5rem;
         }
 
-        .productos {
+        .usuarios {
             background-color: #f4f4f4;
             color: black;
             padding: 20px;
@@ -48,7 +48,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             text-align: left;
         }
 
-        .producto-item {
+        .usuario-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -56,7 +56,7 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
             border-bottom: 1px solid #ddd;
         }
 
-        .producto-item:last-child {
+        .usuario-item:last-child {
             border-bottom: none;
         }
 
@@ -93,60 +93,37 @@ require_once '../modelo/conexion.php'; // Conexión a la base de datos
     <br>
     <br>
 
-    <div class="gestionTiendaOnline">
-        <div class="tituloTiendaOnline">
-            Tienda Online
+    <div class="gestionUsuarios">
+        <div class="tituloUsuarios">
+            Gestión de Usuarios
         </div>
 
         <!-- Formulario para enviar los IDs seleccionados -->
-        <form action="../vista/darDeBajaProducto.php" method="POST">
-            <div class="productos">
+        <form action="../vista/darDeBajaUsuario.php" method="POST">
+            <div class="usuarios">
                 <?php
-                require_once '../vista/conexion.php';
+                require_once '../modelo/conexion.php';
                 
-                // Consulta para obtener los productos
-                $sql = "SELECT id_producto, nombre, precio, imagen_url, vendido, stock FROM producto";
+                // Consulta para obtener los usuarios
+                $sql = "SELECT id_usuario, nombre, email, telefono, tipo_usuario FROM usuario";
                 $resultado = $conn->query($sql);
 
                 if ($resultado && $resultado->num_rows > 0) {
                     while ($fila = $resultado->fetch_assoc()) {
-                        $cantidad_vendida = $fila['vendido'];
-                        $ganancia = $cantidad_vendida * $fila['precio'];
-
-                        echo "<div class='producto-item'>";
-                        echo "ID: {$fila['id_producto']} | Producto: {$fila['nombre']} | P/U: {$fila['precio']} € | Stock: {$fila['stock']} | Vendido: {$fila['vendido']} | Ganancia: $ganancia €";
-                        echo "<input type='checkbox' name='productos[]' value='{$fila['id_producto']}'> "; // Checkbox con el ID
-                        echo "<input type='hidden' name='imagenes[{$fila['id_producto']}]' value='{$fila['imagen_url']}'>"; // Ruta de la imagen
+                        echo "<div class='usuario-item'>";
+                        echo "ID: {$fila['id_usuario']} | Nombre: {$fila['nombre']} | Email: {$fila['email']} | Telefono: {$fila['telefono']} | Tipo: {$fila['tipo_usuario']}";
+                        echo "<input type='checkbox' name='usuarios[]' value='{$fila['id_usuario']}'> "; // Checkbox con el ID
                         echo "</div>";
                     }
                 } else {
-                    echo "<p>No hay productos disponibles.</p>";
+                    echo "<p>No hay usuarios disponibles.</p>";
                 }
                 $conn->close();
                 ?>
             </div>
-            <script>
-                function modificarProducto() {
-                    // Obtener todos los checkboxes seleccionados
-                    const checkboxes = document.querySelectorAll("input[name='productos[]']:checked");
-
-                    // Si no hay exactamente un producto seleccionado, mostrar una alerta
-                    if (checkboxes.length !== 1) {
-                        alert("Debe seleccionar exactamente un producto para modificar.");
-                        return;
-                    }
-
-                    // Obtener el ID del producto seleccionado
-                    const idProducto = checkboxes[0].value;
-
-                    // Redirigir a modificarProductoFormulario.php con el ID como parámetro GET
-                    window.location.href = `../vista/modificarProductoFormulario.php?id_producto=${idProducto}`;
-                }
-            </script>
             <div class="buttons">
-                <button type="button" onclick="window.location.href='../vista/darAltaProductoFormulario.php';">Dar de alta nuevo producto</button>
-                <button type="button" onclick="modificarProducto()">Modificar productos</button>
-                <button type="submit" name="borrar">Dar de baja producto</button>
+                <button type="button" onclick="window.location.href='../vista/darAltaUsuarioFormulario.php';">Dar de alta nuevo usuario</button>
+                <button type="submit" name="borrar">Dar de baja usuario</button>
             </div>            
         </form>
     </div>
