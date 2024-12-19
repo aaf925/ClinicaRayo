@@ -14,22 +14,24 @@ if (!isset($_SESSION['id_usuario'])) {
 
 $id_usuario = $_SESSION['id_usuario']; // Obtener el ID del usuario desde la sesión
 
-// Consultar el total del carrito para calcular el total del pedido
-$sql_carrito = "SELECT SUM(cantidad * total) AS total_pedido
-                FROM carrito
-                WHERE id_usuario = ?";
-$stmt_carrito = $conexion->prepare($sql_carrito);
-$stmt_carrito->bind_param("i", $id_usuario);
-$stmt_carrito->execute();
-$result_carrito = $stmt_carrito->get_result();
-$row_carrito = $result_carrito->fetch_assoc();
+// Consultar el último pedido registrado para el usuario actual
+$sql_pedido = "SELECT total 
+               FROM pedido 
+               WHERE id_usuario = ? 
+               ORDER BY id_pedido DESC 
+               LIMIT 1";
+$stmt_pedido = $conexion->prepare($sql_pedido);
+$stmt_pedido->bind_param("i", $id_usuario);
+$stmt_pedido->execute();
+$result_pedido = $stmt_pedido->get_result();
+$row_pedido = $result_pedido->fetch_assoc();
 
-if (!$row_carrito || !$row_carrito['total_pedido']) {
-    echo "<script>alert('No hay productos en el carrito.'); window.location.href='carrito.php';</script>";
+if (!$row_pedido || !$row_pedido['total']) {
+    echo "<script>alert('No hay pedido en proceso.'); window.location.href='carrito.php';</script>";
     exit();
 }
 
-$total_pedido = number_format($row_carrito['total_pedido'], 2); // Formatear el total del pedido
+$total_pedido = number_format($row_pedido['total'], 2); // Formatear el total del pedido
 ?>
 
 <!DOCTYPE html>

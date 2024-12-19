@@ -38,24 +38,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $provincia = htmlspecialchars($_POST['provincia']);
     $ciudad = htmlspecialchars($_POST['ciudad']);
 
-    // Insertar los datos del pedido en la tabla `pedido`
-    $sql_pedido = "INSERT INTO pedido (id_usuario, fecha_pedido, nombre, apellidos, telefono, direccion, mas_informacion, codigo_postal, provincia, ciudad) 
-                   VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt_pedido = $conexion->prepare($sql_pedido);
-    $stmt_pedido->bind_param("issssssss", $id_usuario, $nombre, $apellidos, $telefono, $direccion, $mas_informacion, $codigo_postal, $provincia, $ciudad);
+    try {
+        // Iniciar una transacción
+        $conexion->begin_transaction();
 
-    if ($stmt_pedido->execute()) {
+        // Insertar los datos del pedido en la tabla `pedido`
+        $sql_pedido = "INSERT INTO pedido (id_usuario, fecha_pedido, nombre, apellidos, telefono, direccion, mas_informacion, codigo_postal, provincia, ciudad, total) 
+                       VALUES (?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt_pedido = $conexion->prepare($sql_pedido);
+        $stmt_pedido->bind_param("issssssssd", $id_usuario, $nombre, $apellidos, $telefono, $direccion, $mas_informacion, $codigo_postal, $provincia, $ciudad, $total);
+
+        if (!$stmt_pedido->execute()) {
+            throw new Exception("Error al guardar el pedido: " . $stmt_pedido->error);
+        }
+
         // Vaciar el carrito del usuario
         $sql_vaciar_carrito = "DELETE FROM carrito WHERE id_usuario = ?";
         $stmt_vaciar_carrito = $conexion->prepare($sql_vaciar_carrito);
         $stmt_vaciar_carrito->bind_param("i", $id_usuario);
-        $stmt_vaciar_carrito->execute();
 
-        // Redirigir a continuarPagarCarrito.php
+        if (!$stmt_vaciar_carrito->execute()) {
+            throw new Exception("Error al vaciar el carrito: " . $stmt_vaciar_carrito->error);
+        }
+
+        // Confirmar la transacción
+        $conexion->commit();
+
         echo "<script>alert('Pedido guardado. Continuando con el pago.'); window.location.href='../vista/continuarPagarCarrito.php';</script>";
         exit();
-    } else {
-        echo "<script>alert('Error al procesar el pedido. Inténtalo de nuevo.');</script>";
+    } catch (Exception $e) {
+        // Revertir la transacción en caso de error
+        $conexion->rollback();
+        echo "<script>alert('Error: " . $e->getMessage() . "');</script>";
     }
 }
 ?>
