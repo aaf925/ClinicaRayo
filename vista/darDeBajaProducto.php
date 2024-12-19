@@ -27,11 +27,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['productos'])) {
     $conn->close();
 
     // Redirigir de vuelta a la página principal con mensaje de éxito
-    header("Location: gestionTiendaOnline.php?borrado=exito");
+    header("Location: ../vista/gestionTiendaOnline.php?borrado=exito");
     exit();
 } else {
     // Redirigir con mensaje de error si no se envían productos
-    header("Location: gestionTiendaOnline.php?borrado=fallo");
+    header("Location: ,,/vista/gestionTiendaOnline.php?borrado=fallo");
     exit();
 }
 ?>

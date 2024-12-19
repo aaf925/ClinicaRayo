@@ -1,24 +1,22 @@
-<?
-require_once '../modelo/conexion.php';
-require_once 'menuUsuarioNoRegistrado.php'; 
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-try {
-    // Consultas para obtener productos por categorías
-    $sqlCremas = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'CREMAS' LIMIT 3";
-    $sqlOtros = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'OTROS' LIMIT 3";
+require_once("../modelo/conexion.php");
+session_start(); // Iniciar sesión
 
-    // Ejecutar consultas
-    $resultCremas = $conn->query($sqlCremas);
-    $resultOtros = $conn->query($sqlOtros);
 
-    // Almacenar resultados en arrays
-    $cremas = $resultCremas->fetch_all(MYSQLI_ASSOC);
-    $otrosProductos = $resultOtros->fetch_all(MYSQLI_ASSOC);
+$banner = '../vista/menuUsuarioNoRegistrado.php';
 
-} catch (Exception $e) {
-    die("Error al cargar los productos: " . $e->getMessage());
-}
 
+// Obtener los tres primeros productos de la categoría 'crema'
+$sql_cremas = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'cremas' LIMIT 3";
+$result_cremas = $conn->query($sql_cremas);
+
+// Obtener los tres primeros productos de la categoría 'producto'
+$sql_productos = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'producto' LIMIT 3";
+$result_productos = $conn->query($sql_productos);
 ?>
 
 <!DOCTYPE html>
@@ -32,7 +30,7 @@ try {
 
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Averta';
             margin: 0;
             padding: 0;
         }
@@ -42,25 +40,22 @@ try {
             font-weight: 700;
             padding-left: 70px;
             margin-bottom: 20px;
+            display: inline-block;
         }
 
         .contenedor {
-            width: 1337px;
-            height: 149px;
-            border-radius: 5px;
-            padding: 20px;
+            width: 90%;
             margin: 20px auto;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: flex-start;
         }
 
-                /* Estilo del carrito */
-                .carrito-contenedor {
-            position: relative;
-            top: 70px;
-            left: 1350px;
-           
+        .carrito-contenedor {
+            position: absolute;
+            top: 150px; /* Ajuste para estar a la altura del título */
+            right: 20px;
         }
 
         .carrito-contenedor img {
@@ -76,26 +71,25 @@ try {
 
         .item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 10px;
+            width: calc(33.333% - 30px);
         }
 
         .item img {
             width: 154px;
             height: auto;
+            cursor: pointer;
         }
 
         .texto {
             color: #000000;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-left: 20px;
+            text-align: center;
             font-weight: 700;
         }
 
         .texto p {
-            margin: 0;
+            margin: 5px 0;
         }
 
         .texto .precio {
@@ -103,105 +97,99 @@ try {
         }
 
         .boton-contenedor1 {
-            display: flex;
-            justify-content: flex-end; 
+            text-align: center;
             margin-top: 30px;
-            margin-right: 70px;
         }
 
-        /* Estilo del botón */
         .boton1 {
-            width: 162px;
-            height: 34px;
+            width: 200px;
+            height: 40px;
             border: none;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            text-transform: none;
             color: white;
             background-color: #111C4E;
             border-radius: 10px;
             transition: background-color 0.3s, transform 0.2s;
+            position:relative;
+            left: 600px;
         }
 
         .boton1:hover {
             background-color: #0D1637;
             transform: translateY(-3px);
         }
-
-        .producto-enlace {
-            text-decoration: none; /* Quita el subrayado */
-            color: inherit; /* Mantiene el color del texto */
-        }
-
-        .producto-enlace:hover {
-            text-decoration: none; /* Asegura que tampoco tenga subrayado al pasar el cursor */
-        }
-
     </style>
 </head>
 <body>
+    <!-- Banner según el estado de la sesión -->
+    <?php include $banner; ?>
 
+    <!-- Icono del carrito -->
+    <div class="carrito-contenedor">
+        <a href="../vista/carrito.php">
+            <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
+        </a>
+    </div>
 
-        <!-- Icono del carrito -->
-        <div class="carrito-contenedor">
-            <a href="carrito.php">
-                <img src="../controlador/images/carrito.png" alt="Carrito de Compras">
-            </a>
-        </div>
-
-<!-- Primer cuadro: Cremas -->
-<div class="titulo" style="margin-top: 120px;">CREMAS</div>
-<div class="contenedor">
-    <?php if (!empty($cremas)): ?>
-        <?php foreach ($cremas as $crema): ?>
-            <a href="producto.php?id=<?php echo htmlspecialchars($crema['id_producto']); ?>" class="producto-enlace">
+    <!-- Sección de Cremas -->
+    <div class="titulo" style="margin-top: 50px;">CREMAS</div>
+    <div class="contenedor">
+        <?php if ($result_cremas && $result_cremas->num_rows > 0): ?>
+            <?php while ($crema = $result_cremas->fetch_assoc()): ?>
                 <div class="item">
-                    <img src="<?php echo htmlspecialchars($crema['imagen_url']); ?>" alt="<?php echo htmlspecialchars($crema['nombre']); ?>">
+                    <a href="producto.php?id=<?php echo $crema['id_producto']; ?>">
+                        <img src="../vista/<?php echo htmlspecialchars($crema['imagen_url']); ?>" alt="<?php echo htmlspecialchars($crema['nombre']); ?>">
+                    </a>
                     <div class="texto">
-                        <p><?php echo htmlspecialchars($crema['nombre']); ?><br><?php echo nl2br(htmlspecialchars($crema['descripcion'])); ?></p>
-                        <p class="precio"><?php echo htmlspecialchars(number_format($crema['precio'], 2, ',', '.')) . " €"; ?></p>
+                        <p><?php echo htmlspecialchars($crema['nombre']); ?></p>
+                        <p class="precio"><?php echo number_format($crema['precio'], 2); ?> €</p>
                     </div>
                 </div>
-            </a>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No hay productos disponibles en esta categoría.</p>
-    <?php endif; ?>
-</div>
-<div class="boton-contenedor1">
-    <a href="tiendaVerMasCremas.php">
-        <button class="boton1">Ver más productos</button>
-    </a>
-</div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
+        <?php endif; ?>
+    </div>
+    <div class="boton-contenedor1">
+        <a href="../vista/tiendaVerMasCremas.php">
+            <button class="boton1">Ver más cremas</button>
+        </a>
+    </div>
 
-<!-- Segundo cuadro: Otros Productos -->
-<div class="titulo" style="margin-top: 70px;">OTROS PRODUCTOS</div>
-<div class="contenedor">
-    <?php if (!empty($otrosProductos)): ?>
-        <?php foreach ($otrosProductos as $producto): ?>
-            <a href="producto.php?id=<?php echo htmlspecialchars($producto['id_producto']); ?>" class="producto-enlace">
+    <!-- Sección de Otros Productos -->
+    <div class="titulo" style="margin-top: 50px;">OTROS PRODUCTOS</div>
+    <div class="contenedor">
+        <?php if ($result_productos && $result_productos->num_rows > 0): ?>
+            <?php while ($producto = $result_productos->fetch_assoc()): ?>
                 <div class="item">
-                    <img src="<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                    <a href="producto.php?id=<?php echo $producto['id_producto']; ?>">
+                        <img src="../vista/<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                    </a>
                     <div class="texto">
-                        <p><?php echo htmlspecialchars($producto['nombre']); ?><br><?php echo nl2br(htmlspecialchars($producto['descripcion'])); ?></p>
-                        <p class="precio"><?php echo htmlspecialchars(number_format($producto['precio'], 2, ',', '.')) . " €"; ?></p>
+                        <p><?php echo htmlspecialchars($producto['nombre']); ?></p>
+                        <p class="precio"><?php echo number_format($producto['precio'], 2); ?> €</p>
                     </div>
                 </div>
-            </a>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <p>No hay productos disponibles en esta categoría.</p>
-    <?php endif; ?>
-</div>
-<div class="boton-contenedor1">
-    <a href="tiendaVerMasProductos.php">
-        <button class="boton1">Ver más productos</button>
-    </a>
-</div>
+            <?php endwhile; ?>
+        <?php else: ?>
+            <p style="text-align: center; font-size: 18px;">No hay productos disponibles en esta categoría.</p>
+        <?php endif; ?>
+    </div>
+    <div class="boton-contenedor1">
+        <a href="../vista/tiendaVerMasProductos.php">
+            <button class="boton1">Ver más productos</button>
+        </a>
+    </div>
+<br>
+<br>
+    <!-- Pie de página -->
+    <?php include '../vista/piePagina.php'; ?>
 
-
-
-<? require_once 'piePagina.php';?>
 </body>
 </html>
+
+<?php
+$conn->close();
+?>

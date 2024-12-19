@@ -32,14 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (move_uploaded_file($imagen_tmp, $imagen_destino)) {
             $ruta_guardar = "img/" . $imagen_nombre;
 
-            // Verificar ruta antes del INSERT
-            echo "Ruta de imagen a guardar: $ruta_guardar";
+
 
             $sql = "INSERT INTO producto (id_producto, nombre, precio, descripcion, stock, categoria, imagen_url) 
                     VALUES ('$id_nuevo', '$nombre', '$precio', '$descripcion', '$cantidad', '$categoria', '$ruta_guardar')";
 
             if ($conn->query($sql) === TRUE) {
-                echo "Producto añadido con éxito.";
                 header("Location: ../vista/darAltaProductoFormulario.php?success=true");
                 exit;
             } else {
