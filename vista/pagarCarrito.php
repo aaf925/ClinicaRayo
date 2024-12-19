@@ -218,5 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 </body>
+<br>
+<br>
+    <!-- Pie de página -->
+    <?php include 'piePagina.html'; ?>
 </html>
 <?php $conexion->close(); ?>

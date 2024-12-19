@@ -155,6 +155,10 @@ $total_pedido = number_format($row_pedido['total'], 2); // Formatear el total de
             </div>
         </form>
     </div>
+    <br>
+<br>
+    <!-- Pie de página -->
+    <?php include 'piePagina.html'; ?>
 </body>
 </html>
 

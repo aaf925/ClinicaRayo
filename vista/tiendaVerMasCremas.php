@@ -5,7 +5,16 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 session_start();
+
+
 require_once("../modelo/conexion.php");
+
+// Determinar qué banner incluir
+if (isset($_SESSION['id_usuario'])) {
+    $banner = 'menuUsuarioRegistrado.html';
+} else {
+    $banner = 'menuUsuarioNoRegistrado.html';
+}
 
 // Simular el ID del usuario si no hay sesión iniciada
 if (!isset($_SESSION['id_usuario'])) {

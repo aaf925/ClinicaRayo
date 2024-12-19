@@ -4,6 +4,14 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 require_once("../modelo/conexion.php");
+session_start(); // Iniciar sesión
+
+// Determinar qué banner incluir
+if (isset($_SESSION['id_usuario'])) {
+    $banner = 'menuUsuarioRegistrado.html';
+} else {
+    $banner = 'menuUsuarioNoRegistrado.html';
+}
 
 // Obtener los tres primeros productos de la categoría 'crema'
 $sql_cremas = "SELECT id_producto, nombre, descripcion, precio, imagen_url FROM producto WHERE categoria = 'crema' LIMIT 3";
@@ -35,6 +43,7 @@ $result_productos = $conexion->query($sql_productos);
             font-weight: 700;
             padding-left: 70px;
             margin-bottom: 20px;
+            display: inline-block;
         }
 
         .contenedor {
@@ -47,9 +56,9 @@ $result_productos = $conexion->query($sql_productos);
         }
 
         .carrito-contenedor {
-            position: absolute; /* Cambiado a posición absoluta */
-            top: 50px; /* Altura ajustada para alinearlo con el título */
-            right: 20px; /* Alineado a la derecha */
+            position: absolute;
+            top: 150px; /* Ajuste para estar a la altura del título */
+            right: 20px;
         }
 
         .carrito-contenedor img {
@@ -117,6 +126,8 @@ $result_productos = $conexion->query($sql_productos);
     </style>
 </head>
 <body>
+    <!-- Banner según el estado de la sesión -->
+    <?php include $banner; ?>
 
     <!-- Icono del carrito -->
     <div class="carrito-contenedor">

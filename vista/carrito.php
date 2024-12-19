@@ -237,6 +237,10 @@ $productos = $result->fetch_all(MYSQLI_ASSOC);
 
         actualizarTotal();
     </script>
+    <br>
+<br>
+    <!-- Pie de página -->
+    <?php include 'piePagina.html'; ?>
 </body>
 </html>
 

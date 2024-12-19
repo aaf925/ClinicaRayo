@@ -7,6 +7,14 @@ session_start(); // Inicia la sesión
 
 require_once("../modelo/conexion.php");
 
+
+// Determinar qué banner incluir
+if (isset($_SESSION['id_usuario'])) {
+    $banner = 'menuUsuarioRegistrado.html';
+} else {
+    $banner = 'menuUsuarioNoRegistrado.html';
+}
+
 // Simular el ID del usuario si no hay sesión iniciada
 if (!isset($_SESSION['id_usuario'])) {
     // Variable provisional para pruebas
@@ -93,9 +101,10 @@ $conexion->close();
         }
         .carrito-contenedor {
             position: absolute;
-            top: 20px;
+            top: 150px; /* Ajuste para estar a la altura del título */
             right: 20px;
         }
+        
         .carrito-contenedor img {
             width: 80px;
             height: 80px;
@@ -167,6 +176,8 @@ $conexion->close();
     </script>
 </head>
 <body>
+     <!-- Banner según el estado de la sesión -->
+     <?php include $banner; ?>
     <!-- Icono del carrito -->
     <div class="carrito-contenedor">
         <a href="carrito.php">
@@ -217,5 +228,9 @@ $conexion->close();
             <?php endforeach; ?>
         </div>
     </div>
+    <br>
+<br>
+    <!-- Pie de página -->
+    <?php include 'piePagina.html'; ?>
 </body>
 </html>
