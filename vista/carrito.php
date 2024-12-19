@@ -154,7 +154,7 @@ $productos = $result->fetch_all(MYSQLI_ASSOC);
     <?php if (!empty($productos)): ?>
         <?php foreach ($productos as $producto): ?>
             <div class="producto" data-id="<?php echo $producto['id_producto']; ?>" data-price="<?php echo $producto['precio']; ?>">
-                <img src="../<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                <img src="../vista/<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
                 <div class="detalle-producto">
                     <p><strong><?php echo htmlspecialchars($producto['nombre']); ?></strong></p>
                     <p>Precio: <?php echo number_format($producto['precio'], 2); ?> €</p>

@@ -8,10 +8,6 @@ session_start(); // Inicia la sesión
 require_once("../modelo/conexion.php");
 
 
-// Determinar qué banner incluir
-
-$banner = '../vista/menuUsuarioNoRegistrado.php';
-
 // Simular el ID del usuario si no hay sesión iniciada
 if (!isset($_SESSION['id_usuario'])) {
     // Variable provisional para pruebas
@@ -45,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['accion']) && $_POST['
     } else {
         echo json_encode(['success' => false, 'error' => 'Error al preparar la consulta: ' . $conn->error]);
     }
-    $conn->close();
     exit();
 }
 
@@ -81,7 +76,6 @@ while ($row = $result_relacionados->fetch_assoc()) {
     $otros_productos[] = $row;
 }
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -174,7 +168,7 @@ $conn->close();
 </head>
 <body>
      <!-- Banner según el estado de la sesión -->
-     <?php include $banner; ?>
+     <?php include 'menuUsuarioNoRegistrado.php'; ?>
     <!-- Icono del carrito -->
     <div class="carrito-contenedor">
         <a href="../vista/carrito.php">
@@ -187,7 +181,7 @@ $conn->close();
         <div class="producto-detalle">
             <!-- Imagen del producto -->
             <div class="imagen-producto">
-                <img src="../<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
+                <img src="../vista/<?php echo htmlspecialchars($producto['imagen_url']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
             </div>
 
             <!-- Información del producto -->
@@ -218,7 +212,7 @@ $conn->close();
             <?php foreach ($otros_productos as $otro): ?>
                 <div class="otros-productos" >
                     <a href="../vista/producto.php?id=<?php echo $otro['id_producto']; ?>">
-                        <img src="../<?php echo htmlspecialchars($otro['imagen_url']); ?>" alt="<?php echo htmlspecialchars($otro['nombre']); ?>">
+                        <img src="../vista/<?php echo htmlspecialchars($otro['imagen_url']); ?>" alt="<?php echo htmlspecialchars($otro['nombre']); ?>">
                     </a>
                     <p><?php echo htmlspecialchars($otro['nombre']); ?></p>
                 </div>
@@ -228,6 +222,7 @@ $conn->close();
     <br>
 <br>
     <!-- Pie de página -->
-    <?php include '../vista/piePagina.php'; ?>
+    <?php include '../vista/piePagina.php'; 
+    $conn->close();?>
 </body>
 </html>
