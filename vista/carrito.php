@@ -5,6 +5,7 @@ error_reporting(E_ALL);
 
 session_start();
 require_once("../modelo/conexion.php");
+require_once("../vista/menuUsuarioRegistrado.php");
 
 // Verificar si el usuario ha iniciado sesión
 if (!isset($_SESSION['id_usuario'])) {
@@ -237,6 +238,8 @@ $productos = $result->fetch_all(MYSQLI_ASSOC);
 
         actualizarTotal();
     </script>
+<?php require_once("../vista/piePagina.php");?>
+
 </body>
 </html>
 

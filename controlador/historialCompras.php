@@ -4,7 +4,7 @@ session_start();
 if (!isset($_SESSION['loggedin']) || $_SESSION['tipo_usuario'] !== 'cliente') {
     
     // Si no es administrador o no ha iniciado sesión, redirigir a la página de inicio de sesión
-    header("Location: ../vista/iniciarSesion.php");
+    header("Location: iniciarSesion.php");
     exit();
 }
 

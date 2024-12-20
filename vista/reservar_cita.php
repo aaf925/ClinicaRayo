@@ -1,5 +1,7 @@
 <?php 
 include_once ('../modelo/conexion.php');
+include_once ('../vista/menuUsuarioNoRegistrado.php');
+
 
 // Verificar la conexión
 if ($conn->connect_error) {
@@ -386,5 +388,7 @@ next.addEventListener("click", () => {
 renderCalendar(currentDate);
 
     </script>
+    <?php include_once ('../vista/piePagina.php');?>
+
 </body>
 </html>

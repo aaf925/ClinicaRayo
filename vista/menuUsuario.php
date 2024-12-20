@@ -42,8 +42,7 @@
             display: flex;
             gap: 40px; 
             margin-top: -30px; 
-            margin-left: 1310px; 
-            
+            margin-left: calc(85vw - 300px); 
         }
 
         .boton {
@@ -69,11 +68,9 @@
         .contenedor-tabla {
             position: absolute; 
             top: 127px; 
-            left: 1605px; 
-            justify-content: flex-end;
-            padding-left: 925px;
-            transform: translate(-50%, -50%); 
-            width: 100%; 
+            right: 0; /* Ajusta el contenedor al borde derecho de la pantalla */
+            transform: translate(0, -50%); /* Ajusta el elemento de manera centrada verticalmente, pero sin moverlo horizontalmente */
+            width: auto;  /* O puedes usar un valor específico para el ancho si quieres que no sea 100% */
             text-align: center;
             z-index: 10; 
         }
@@ -138,7 +135,7 @@
                 <tr>
                     <td><a href="../controlador/historialCompras.php">Historial Compras</a></td>
                     <td><a href="../controlador/historialCitas.php">Historial Citas</a></td>
-                    <td><a href="reservarCita.php">Modificar Datos</a></td>
+                    <td><a href="menuUsuario.php">Modificar Datos</a></td>
                 </tr>
             </tbody>
         </table>

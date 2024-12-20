@@ -284,7 +284,7 @@
                         de la empresa</button>
                     </a>
 
- <a href="">
+ <a href="../vista/gestionCitas.php">
                     <button class="botones4">Gestión de<br>
                         citas</button>
                     </a>

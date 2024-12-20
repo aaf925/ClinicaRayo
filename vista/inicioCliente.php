@@ -19,9 +19,36 @@ $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
 
-// Cerrar la conexión
-$stmt->close();
+// Consultar los dos últimos registros de historial de citas
+$sql_citas = "
+    SELECT id_cita, lugar, fecha, hora, asistencia, atendido_por, calificacion 
+    FROM historial_cita 
+    WHERE id_usuario = ? 
+    ORDER BY fecha DESC, hora DESC 
+    LIMIT 2";
+$stmt_citas = $conn->prepare($sql_citas);
+$stmt_citas->bind_param("i", $id_usuario);
+$stmt_citas->execute();
+$result_citas = $stmt_citas->get_result();
+$citas = $result_citas->fetch_all(MYSQLI_ASSOC);
+$stmt_citas->close();
+
+// Consultar los dos últimos registros de historial de compras
+$sql_compras = "
+    SELECT id_compra, fecha, precio_total, productos, calificacion 
+    FROM historial_compra 
+    WHERE id_usuario = ? 
+    ORDER BY fecha DESC 
+    LIMIT 2";
+$stmt_compras = $conn->prepare($sql_compras);
+$stmt_compras->bind_param("i", $id_usuario);
+$stmt_compras->execute();
+$result_compras = $stmt_compras->get_result();
+$compras = $result_compras->fetch_all(MYSQLI_ASSOC);
+$stmt_compras->close();
+
 $conn->close();
+
 
 // Si no se encuentran datos, redirigir
 if (!$user) {
@@ -70,14 +97,18 @@ if (!$user) {
         }
 
         .card {
-            background-color: #1A428A;
-            color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-left: 10px;
-            margin-bottom: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
+    background-color: #1A428A;
+    color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    height: 300px; /* Altura fija */
+    display: flex; /* Asegura el alineamiento del contenido */
+    flex-direction: column;
+    justify-content: space-between; /* Distribuye el contenido de manera uniforme */
+}
+
 
         .card h3 {
             font-size: 1.2rem;
@@ -148,43 +179,50 @@ if (!$user) {
 </head>
 <body>
     <div class="container">
-        <!-- Historial de Citas -->
-        <div class="section">
+       
+    <!-- Historial de Citas -->
+    <div class="section">
             <div class="section-title">Historial de Citas</div>
-            <div class="card">
-                <h3>SERVICIO CONTRATADO</h3>
-                <p>Información principal de la cita: Fecha de la cita, persona que le atiende, lugar de la cita</p>
-                <button class="btn">Ver información completa</button>
-            </div>
-            <div class="card">
-                <h3>SERVICIO CONTRATADO</h3>
-                <p>Información principal de la cita: Fecha de la cita, persona que le atiende, lugar de la cita</p>
-                <button class="btn">Ver información completa</button>
-            </div>
-            <a href="../controlador/historialCitas.php">
-            <button class="btn full-width-btn">Ver historial de citas completo</button>
+            <?php foreach ($citas as $cita): ?>
+                <div class="card">
+                    <h3>Servicio Contratado</h3>
+                    <p><strong>Fecha:</strong> <?php echo htmlspecialchars($cita['fecha']); ?></p>
+                    <p><strong>Hora:</strong> <?php echo htmlspecialchars($cita['hora']); ?></p>
+                    <p><strong>Lugar:</strong> <?php echo htmlspecialchars($cita['lugar']); ?></p>
+                    <p><strong>Atendido por:</strong> <?php echo htmlspecialchars($cita['atendido_por']); ?></p>
+                    <p><strong>Asistencia:</strong> <?php echo $cita['asistencia'] ? 'Sí' : 'No'; ?></p>
+                    
+                <a href="../controlador/generarPDFServicio.php?id_cita=<?php echo htmlspecialchars($cita['id_cita']); ?>" target="_blank">
+                    <button class="btn">Ver información completa</button>
                 </a>
+
+                </div>
+            <?php endforeach; ?>
+            <a href="../controlador/historialCitas.php">
+                <button class="btn full-width-btn">Ver historial de citas completo</button>
+            </a>
+
+            
+
         </div>
 
         <!-- Historial de Compras -->
         <div class="section">
             <div class="section-title">Historial de Compras</div>
-            <div class="card">
-                <h3>Pedido nºX - Fecha de Pedido</h3>
-                <p>Información principal del pedido: Número de productos comprados, total pagado, dirección de envío</p>
-                <button class="btn">Ver información completa</button>
-
-                
-            </div>
-            <div class="card">
-                <h3>Pedido nºX - Fecha de Pedido</h3>
-                <p>Información principal del pedido: Número de productos comprados, total pagado, dirección de envío</p>
-                <button class="btn">Ver información completa</button>
-            </div>
+            <?php foreach ($compras as $compra): ?>
+                <div class="card">
+                    <h3>Pedido Nº<?php echo htmlspecialchars($compra['id_compra']); ?></h3>
+                    <p><strong>Fecha:</strong> <?php echo htmlspecialchars($compra['fecha']); ?></p>
+                    <p><strong>Total pagado:</strong> <?php echo number_format($compra['precio_total'], 2); ?> €</p>
+                    <p><strong>Productos:</strong> <?php echo htmlspecialchars($compra['productos']); ?></p>
+                    <a href="../controlador/generarTicket.php?id_compra=<?php echo htmlspecialchars($compra['id_compra']); ?>" target="_blank">
+                    <button class="btn">Ver información completa</button>
+                </a>
+                </div>
+            <?php endforeach; ?>
             <a href="../controlador/historialCompras.php">
-            <button class="btn full-width-btn">Ver historial de compras completo</button>
+                <button class="btn full-width-btn">Ver historial de compras completo</button>
             </a>
-            
         </div>
         
         <!-- Información de Usuario -->
